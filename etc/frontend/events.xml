@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+
+    <event name="checkout_cart_add_product_complete">
+        <observer name="MimmoCartProductAdded" instance="Bitbull\Mimmo\Observer\Cart\ProductAdded" />
+    </event>
+
+    <event name="sales_quote_remove_item">
+        <observer name="MimmoCartProductRemoved" instance="Bitbull\Mimmo\Observer\Cart\ProductRemoved" />
+    </event>
+
+    <event name="checkout_cart_update_items_before">
+        <observer name="MimmoCartProductUpdated" instance="Bitbull\Mimmo\Observer\Cart\ProductUpdated" />
+    </event>
+
+</config>

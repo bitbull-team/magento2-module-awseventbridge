@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <virtualType name="MimmoLogger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers"  xsi:type="array">
+                <item name="debug" xsi:type="object">Bitbull\Mimmo\Model\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Bitbull\Mimmo\Model\Service\Logger">
+        <arguments>
+            <argument name="logger" xsi:type="object">MimmoLogger</argument>
+        </arguments>
+    </type>
+
+    <preference for="Bitbull\Mimmo\Api\Service\ConfigInterface"
+                type="Bitbull\Mimmo\Model\Service\Config" />
+
+    <preference for="Bitbull\Mimmo\Api\Service\LoggerInterface"
+                type="Bitbull\Mimmo\Model\Service\Logger" />
+
+    <type name="Bitbull\Mimmo\Observer\Cart\ProductAdded">
+        <plugin name="AroundEventProductAdded" type="Bitbull\Mimmo\Plugin\Observer" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\Mimmo\Observer\Cart\ProductUpdated">
+        <plugin name="AroundEventProductUpdated" type="Bitbull\Mimmo\Plugin\Observer" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\Mimmo\Observer\Cart\ProductRemoved">
+        <plugin name="AroundEventProductRemoved" type="Bitbull\Mimmo\Plugin\Observer" sortOrder="1" disabled="false"/>
+    </type>
+
+</config>

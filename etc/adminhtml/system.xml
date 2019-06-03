@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="mimmo" translate="label" sortOrder="9000" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Mimmo Serverless</label>
+            <tab>service</tab>
+            <resource>Bitbull_Mimmo::config</resource>
+            <group id="credentials" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Credentials</label>
+                <field id="region" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Region</label>
+                    <comment><![CDATA[default value is 'us-east-1']]></comment>
+                </field>
+                <field id="access_key" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Access Key</label>
+                    <comment><![CDATA[If empty will be used the EC2 instance's IAM role access]]></comment>
+                </field>
+                <field id="secret_access_key" type="password" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Secret Access Key</label>
+                    <comment><![CDATA[If empty will be used the EC2 instance's IAM role]]></comment>
+                </field>
+                <field id="source" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Event source name</label>
+                    <comment><![CDATA[If empty will be used the store's domain name]]></comment>
+                </field>
+            </group>
+            <group id="log" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Logging</label>
+                <field id="debug_mode" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Debug mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="events" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Event Bus</label>
+                <field id="cart_product_added" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CartProductAdded</label>
+                    <comment><![CDATA[A product is added to cart by a customer]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="cart_product_updated" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CartProductUpdated</label>
+                    <comment><![CDATA[A cart is updated by a customer]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="cart_product_removed" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CartProductRemoved</label>
+                    <comment><![CDATA[A product is removed from cart by a customer]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="new_order" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>NewOrder</label>
+                    <comment><![CDATA[A new order is placed by a customer]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="user_logged" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>UserLogged</label>
+                    <comment><![CDATA[A customer is logged]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="user_registered" type="select" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>UserRegistered</label>
+                    <comment><![CDATA[A new customer is registered]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
