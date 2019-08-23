@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+
+    <!-- Checkout -->
+
+    <event name="sales_order_place_after">
+        <observer name="awseventbridge_order_placed" instance="Bitbull\AWSEventBridge\Observer\Order\Placed"/>
+    </event>
+
+    <!-- Cache -->
+
+    <event name="adminhtml_cache_flush_system">
+        <observer name="awseventbridge_cache_flush_system" instance="Bitbull\AWSEventBridge\Observer\Cache\FlushSystem" />
+    </event>
+    <event name="adminhtml_cache_flush_all">
+        <observer name="awseventbridge_cache_flush_all" instance="Bitbull\AWSEventBridge\Observer\Cache\FlushAll" />
+    </event>
+    <event name="clean_media_cache_after">
+        <observer name="awseventbridge_cache_flush_media" instance="Bitbull\AWSEventBridge\Observer\Cache\FlushMedia" />
+    </event>
+    <event name="clean_catalog_images_cache_after">
+        <observer name="awseventbridge_cache_flush_images" instance="Bitbull\AWSEventBridge\Observer\Cache\FlushCatalogImages" />
+    </event>
+    <event name="clean_static_files_cache_after">
+        <observer name="awseventbridge_cache_flush_static_files" instance="Bitbull\AWSEventBridge\Observer\Cache\FlushStaticFiles" />
+    </event>
+
+</config>

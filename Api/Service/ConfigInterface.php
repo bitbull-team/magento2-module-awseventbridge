@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Bitbull\Mimmo\Api\Service;
+namespace Bitbull\AWSEventBridge\Api\Service;
 
 interface ConfigInterface
 {
@@ -33,10 +33,18 @@ interface ConfigInterface
     public function isDebugModeEnabled();
 
     /**
+     * Check if dry run mode is enabled
+     *
+     * @return boolean
+     */
+    public function isDryRunModeEnabled();
+
+    /**
      * Check if event is enabled
      *
      * @param  string $eventName
+     * @param  string $scope
      * @return boolean
      */
-    public function isEventEnabled($eventName);
+    public function isEventEnabled($eventName, $scope = 'global');
 }

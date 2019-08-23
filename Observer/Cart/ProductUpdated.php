@@ -1,13 +1,11 @@
 <?php
-namespace Bitbull\Mimmo\Observer\Cart;
+namespace Bitbull\AWSEventBridge\Observer\Cart;
 
-use Bitbull\Mimmo\Observer\BaseObserver;
+use Bitbull\AWSEventBridge\Observer\BaseObserver;
 use Magento\Framework\Event\Observer;
 
 class ProductUpdated extends BaseObserver
 {
-    const EVENT_NAME = 'CartProductUpdated';
-
     /**
      * @param Observer $observer
      * @return void
@@ -38,7 +36,7 @@ class ProductUpdated extends BaseObserver
                 continue;
             }
 
-            $this->eventEmitter->send($this->getEventName(), [
+            $this->eventEmitter->send($this->getFullEventName(), [
                 'sku' => $item->getSku(),
                 'operation' => $event,
                 'value' => abs($qtyDiff),

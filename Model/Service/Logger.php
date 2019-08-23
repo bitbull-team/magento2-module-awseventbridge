@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Bitbull\Mimmo\Model\Service;
+namespace Bitbull\AWSEventBridge\Model\Service;
 
-use Bitbull\Mimmo\Api\Service\LoggerInterface;
-use Bitbull\Mimmo\Api\Service\ConfigInterface;
+use Bitbull\AWSEventBridge\Api\Service\LoggerInterface;
+use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
 use Magento\Framework\Logger\Monolog;
 
 class Logger implements LoggerInterface

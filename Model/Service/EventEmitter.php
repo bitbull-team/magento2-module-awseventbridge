@@ -1,11 +1,12 @@
 <?php
 
-namespace Bitbull\Mimmo\Model\Service;
+namespace Bitbull\AWSEventBridge\Model\Service;
 
-use Bitbull\Mimmo\Api\Service\ConfigInterface;
-use Bitbull\Mimmo\Api\Service\EventEmitterInterface;
-use Bitbull\Mimmo\Api\Service\LoggerInterface;
+use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
+use Bitbull\AWSEventBridge\Api\Service\EventEmitterInterface;
+use Bitbull\AWSEventBridge\Api\Service\LoggerInterface;
 use Aws\CloudWatchEvents\CloudWatchEventsClient;
+use Bitbull\AWSEventBridge\Api\Service\TrackingInterface;
 use Magento\Framework\Serialize\Serializer\Json as SerializerJson;
 
 class EventEmitter implements EventEmitterInterface
@@ -31,32 +32,58 @@ class EventEmitter implements EventEmitterInterface
     private $client;
 
     /**
+     * @var TrackingInterface
+     */
+    protected $tracking;
+    /**
      * Event emitter.
      *
      * @param LoggerInterface $logger
      * @param ConfigInterface $config
      * @param SerializerJson $serializerJson
+     * @param TrackingInterface $tracking
      */
     public function __construct(
         LoggerInterface $logger,
         ConfigInterface $config,
-        SerializerJson $serializerJson
+        SerializerJson $serializerJson,
+        TrackingInterface $tracking
     )
     {
         $this->logger = $logger;
         $this->config = $config;
         $this->serializerJson = $serializerJson;
-        $this->client = new CloudWatchEventsClient([
-            'version' => '2015-10-07',
-            'region' => $this->config->getRegion(),
-            'credentials' => $this->config->getCredentials(),
-        ]);
+        $this->tracking = $tracking;
+
+        if ($this->config->isDryRunModeEnabled()) {
+            try {
+                $this->client = new CloudWatchEventsClient([
+                    'version' => '2015-10-07',
+                    'region' => $this->config->getRegion(),
+                    'credentials' => $this->config->getCredentials(),
+                ]);
+            } catch (\Exception $exception) {
+                $this->logger->logException($exception);
+
+            }
+        }
     }
 
     /** @inheritDoc */
-    public function send($eventName, $data)
+    public function send($eventName, $eventData)
     {
-        $this->logger->debug("Event '$eventName' sending with data: ".print_r($data, true));
+        $data = [
+            'data' => $eventData,
+            'tracking' => $this->tracking->getTrackingParams()
+        ];
+
+        if ($this->config->isDryRunModeEnabled()) {
+            $this->logger->debug("[DryRun] Sending event '$eventName' with data: ".print_r($data, true));
+            $this->logger->debug("[DryRun] Event '$eventName' sent with id 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'");
+            return;
+        }
+
+        $this->logger->debug("Sending event '$eventName' with data: ".print_r($data, true));
         try {
             $result = $this->client->putEvents([
                 'Entries' => [

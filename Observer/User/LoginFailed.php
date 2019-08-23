@@ -1,10 +1,10 @@
 <?php
-namespace Bitbull\AWSEventBridge\Observer\Cart;
+namespace Bitbull\AWSEventBridge\Observer\User;
 
 use Bitbull\AWSEventBridge\Observer\BaseObserver;
 use Magento\Framework\Event\Observer;
 
-class ProductAdded extends BaseObserver
+class LoginFailed extends BaseObserver
 {
     /**
      * @param Observer $observer
@@ -12,12 +12,8 @@ class ProductAdded extends BaseObserver
      */
     public function execute(Observer $observer)
     {
-        /** @var \Magento\Catalog\Api\Data\ProductInterface $product */
-        $product = $observer->getProduct();
-
         $this->eventEmitter->send($this->getFullEventName(), [
-            'sku' => $product->getSku(),
-            'qty' => round($product->getCartQty())
+            'username' => $observer->getUserName()
         ]);
     }
 }

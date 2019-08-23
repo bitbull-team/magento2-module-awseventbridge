@@ -1,20 +1,22 @@
 <?php declare(strict_types=1);
 
-namespace Bitbull\Mimmo\Model\Service;
+namespace Bitbull\AWSEventBridge\Model\Service;
 
-use Bitbull\Mimmo\Api\Service\ConfigInterface;
+use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
 class Config implements ConfigInterface
 {
     const XML_PATH_GENERAL_STORE_URL = 'general/locale/code';
-    const XML_PATH_REGION = 'mimmo/credentials/region';
-    const XML_PATH_ACCESS_KEY = 'mimmo/credentials/access_key';
-    const XML_PATH_SECRET_ACCESS_KEY = 'mimmo/credentials/secret_access_key';
-    const XML_PATH_SOURCE = 'mimmo/credentials/source';
-    const XML_PATH_DEBUG_MODE = 'mimmo/log/debug_mode';
-    const XML_PATH_EVENT_PREFIX = 'mimmo/events';
+    const XML_PATH_REGION = 'aws_eventbridge/credentials/region';
+    const XML_PATH_ACCESS_KEY = 'aws_eventbridge/credentials/access_key';
+    const XML_PATH_SECRET_ACCESS_KEY = 'aws_eventbridge/credentials/secret_access_key';
+    const XML_PATH_SOURCE = 'aws_eventbridge/credentials/source';
+    const XML_PATH_DEBUG_MODE = 'aws_eventbridge/dev/debug_mode';
+    const XML_PATH_DRY_RUN_MODE = 'aws_eventbridge/dev/dry_run_mode';
+
+    const XML_PATH_EVENT_PREFIX = 'aws_eventbridge/events_';
 
     /**
      * @var ScopeConfigInterface
@@ -56,8 +58,8 @@ class Config implements ConfigInterface
     public function getCredentials()
     {
         return [
-            'key' => $this->scopeConfig->getValue(self::XML_PATH_ACCESS_KEY, \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
-            'secret' => $this->scopeConfig->getValue(self::XML_PATH_SECRET_ACCESS_KEY, \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+            'key' => (string) $this->scopeConfig->getValue(self::XML_PATH_ACCESS_KEY, \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+            'secret' => (string) $this->scopeConfig->getValue(self::XML_PATH_SECRET_ACCESS_KEY, \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
         ];
     }
 
@@ -90,10 +92,19 @@ class Config implements ConfigInterface
     /**
      * @inheritdoc
      */
-    public function isEventEnabled($eventName)
+    public function isDryRunModeEnabled()
     {
-        $prefix = self::XML_PATH_EVENT_PREFIX;
-        $eventName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $eventName));
-        return $this->scopeConfig->isSetFlag("$prefix/$eventName");
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_DRY_RUN_MODE);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isEventEnabled($eventName, $scopeName = null)
+    {
+        $eventName = strtolower(preg_replace('/(?<!^|\\\)[A-Z]/', '_$0', $eventName)); // convert from CamelCase to snake_case
+        $scopeName = $scopeName !== null ? strtolower(preg_replace('/(?<!^|\\\)[A-Z]/', '_$0', $scopeName)) : null; // convert from CamelCase to snake_case if not null
+        $configName = $scopeName === null ? $eventName : "$scopeName/$eventName"; // concatenate scope and event name
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_EVENT_PREFIX  . $configName);
     }
 }

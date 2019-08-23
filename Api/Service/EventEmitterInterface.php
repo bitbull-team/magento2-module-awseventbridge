@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Bitbull\Mimmo\Api\Service;
+namespace Bitbull\AWSEventBridge\Api\Service;
 
 interface EventEmitterInterface
 {
@@ -8,7 +8,7 @@ interface EventEmitterInterface
      * Send event
      *
      * @param string $eventName
-     * @param array $data
+     * @param array $eventData
      */
-    public function send($eventName, $data);
+    public function send($eventName, $eventData);
 }

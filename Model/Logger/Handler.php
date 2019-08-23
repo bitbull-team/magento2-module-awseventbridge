@@ -1,5 +1,5 @@
 <?php declare(strict_types=1);
-namespace Bitbull\Mimmo\Model\Logger;
+namespace Bitbull\AWSEventBridge\Model\Logger;
 
 use Magento\Framework\Logger\Handler\Base;
 use Magento\Framework\Filesystem\DriverInterface;
@@ -11,7 +11,7 @@ class Handler extends Base
      *
      * @var string
      */
-    const LOG_FILE_NAME = 'mimmo.log';
+    const LOG_FILE_NAME = 'aws-eventbridge.log';
 
     /**
      * Logging level

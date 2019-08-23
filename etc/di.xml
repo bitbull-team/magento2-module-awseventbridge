@@ -1,34 +1,115 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 
-    <virtualType name="MimmoLogger" type="Magento\Framework\Logger\Monolog">
+    <!-- Logging -->
+
+    <virtualType name="AWSEventBridgeLogger" type="Magento\Framework\Logger\Monolog">
         <arguments>
             <argument name="handlers"  xsi:type="array">
-                <item name="debug" xsi:type="object">Bitbull\Mimmo\Model\Logger\Handler</item>
+                <item name="debug" xsi:type="object">Bitbull\AWSEventBridge\Model\Logger\Handler</item>
             </argument>
         </arguments>
     </virtualType>
 
-    <type name="Bitbull\Mimmo\Model\Service\Logger">
+    <type name="Bitbull\AWSEventBridge\Model\Service\Logger">
         <arguments>
-            <argument name="logger" xsi:type="object">MimmoLogger</argument>
+            <argument name="logger" xsi:type="object">AWSEventBridgeLogger</argument>
         </arguments>
     </type>
 
-    <preference for="Bitbull\Mimmo\Api\Service\ConfigInterface"
-                type="Bitbull\Mimmo\Model\Service\Config" />
+    <!-- Sessions proxy -->
 
-    <preference for="Bitbull\Mimmo\Api\Service\LoggerInterface"
-                type="Bitbull\Mimmo\Model\Service\Logger" />
+    <type name="Bitbull\AWSEventBridge\Model\Service\Tracking">
+        <arguments>
+            <argument name="backendUserSession" xsi:type="object">Magento\Backend\Model\Auth\Session\Proxy</argument>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
 
-    <type name="Bitbull\Mimmo\Observer\Cart\ProductAdded">
-        <plugin name="AroundEventProductAdded" type="Bitbull\Mimmo\Plugin\Observer" sortOrder="1" disabled="false"/>
+    <!-- Interfaces preference -->
+
+    <preference for="Bitbull\AWSEventBridge\Api\Service\ConfigInterface"
+                type="Bitbull\AWSEventBridge\Model\Service\Config" />
+
+    <preference for="Bitbull\AWSEventBridge\Api\Service\LoggerInterface"
+                type="Bitbull\AWSEventBridge\Model\Service\Logger" />
+
+    <preference for="Bitbull\AWSEventBridge\Api\Service\TrackingInterface"
+                type="Bitbull\AWSEventBridge\Model\Service\Tracking" />
+
+    <!-- Observers cart -->
+
+    <type name="Bitbull\AWSEventBridge\Observer\Cart\ProductAdded">
+        <plugin name="AroundEventCartProductAdded" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
     </type>
-    <type name="Bitbull\Mimmo\Observer\Cart\ProductUpdated">
-        <plugin name="AroundEventProductUpdated" type="Bitbull\Mimmo\Plugin\Observer" sortOrder="1" disabled="false"/>
+    <type name="Bitbull\AWSEventBridge\Observer\Cart\ProductUpdated">
+        <plugin name="AroundEventCartProductUpdated" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
     </type>
-    <type name="Bitbull\Mimmo\Observer\Cart\ProductRemoved">
-        <plugin name="AroundEventProductRemoved" type="Bitbull\Mimmo\Plugin\Observer" sortOrder="1" disabled="false"/>
+    <type name="Bitbull\AWSEventBridge\Observer\Cart\ProductRemoved">
+        <plugin name="AroundEventCartProductRemoved" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+
+    <!-- Observers admin login -->
+
+    <type name="Bitbull\AWSEventBridge\Observer\User\LoggedIn">
+        <plugin name="AroundEventUserLoggedIn" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\User\LoggedOut">
+        <plugin name="AroundEventUserLoggedOut" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\User\LoginFailed">
+        <plugin name="AroundEventUserLoginFailed" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+
+    <!-- Observers customer login/register -->
+
+    <type name="Bitbull\AWSEventBridge\Observer\Customer\LoggedIn">
+        <plugin name="AroundEventCustomerLoggedIn" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Customer\LoggedOut">
+        <plugin name="AroundEventCustomerLoggedOut" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Customer\LoginFailed">
+        <plugin name="AroundEventCustomerFailed" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Customer\SignedUp">
+        <plugin name="AroundEventCustomerSignedUp" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Customer\SignedUp">
+        <plugin name="AroundEventCustomerSignedUp" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Customer\SignedUpFailed">
+        <plugin name="AroundEventCustomerSignedUpFailed" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+
+    <!-- Observers newsletter -->
+
+    <type name="Bitbull\AWSEventBridge\Observer\Newsletter\SubscriptionChanged">
+        <plugin name="AroundEventNewsletterSubscriptionChanged" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+
+    <!-- Observers order -->
+
+    <type name="Bitbull\AWSEventBridge\Observer\Order\Placed">
+        <plugin name="AroundEventOrderPlaced" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+
+    <!-- Observers cache -->
+
+    <type name="Bitbull\AWSEventBridge\Observer\Cache\FlushSystem">
+        <plugin name="AroundEventOrderPlaced" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Cache\FlushAll">
+        <plugin name="AroundEventOrderPlaced" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Cache\FlushMedia">
+        <plugin name="AroundEventOrderPlaced" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Cache\FlushCatalogImages">
+        <plugin name="AroundEventOrderPlaced" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Cache\FlushStaticFiles">
+        <plugin name="AroundEventOrderPlaced" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
     </type>
 
 </config>

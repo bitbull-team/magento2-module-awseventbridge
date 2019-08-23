@@ -1,13 +1,11 @@
 <?php
-namespace Bitbull\Mimmo\Observer\Cart;
+namespace Bitbull\AWSEventBridge\Observer\Cart;
 
-use Bitbull\Mimmo\Observer\BaseObserver;
+use Bitbull\AWSEventBridge\Observer\BaseObserver;
 use Magento\Framework\Event\Observer;
 
 class ProductRemoved extends BaseObserver
 {
-    const EVENT_NAME = 'CartProductRemoved';
-
     /**
      * @param Observer $observer
      * @return void
@@ -20,7 +18,7 @@ class ProductRemoved extends BaseObserver
         /** @var \Magento\Catalog\Api\Data\ProductInterface $product */
         $product = $quoteItem->getProduct();
 
-        $this->eventEmitter->send($this->getEventName(), [
+        $this->eventEmitter->send($this->getFullEventName(), [
             'sku' => $product->getSku(),
             'qty' => round($quoteItem->getQty())
         ]);

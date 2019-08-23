@@ -1,16 +1,18 @@
 <?php declare(strict_types=1);
 
-namespace Bitbull\Mimmo\Observer;
+namespace Bitbull\AWSEventBridge\Observer;
 
-use Bitbull\Mimmo\Api\Service\ConfigInterface;
-use Bitbull\Mimmo\Api\Service\LoggerInterface;
-use Bitbull\Mimmo\Model\Service\EventEmitter;
-use Bitbull\Mimmo\Api\ObserverInterface;
+use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
+use Bitbull\AWSEventBridge\Api\Service\LoggerInterface;
+use Bitbull\AWSEventBridge\Model\Service\EventEmitter;
+use Bitbull\AWSEventBridge\Api\ObserverInterface;
 use Magento\Framework\Event\Observer;
+use ReflectionClass;
 
 abstract class BaseObserver implements ObserverInterface
 {
-    const EVENT_NAME = null;
+    const SCOPE_NAME = null; // default is last namespace
+    const EVENT_NAME = null; // default is class name
 
     /**
      * @var LoggerInterface
@@ -28,6 +30,11 @@ abstract class BaseObserver implements ObserverInterface
     protected $eventEmitter;
 
     /**
+     * @var ReflectionClass
+     */
+    protected $reflectionClass;
+
+    /**
      * @param LoggerInterface $logger
      * @param ConfigInterface $config
      * @param EventEmitter $eventEmitter
@@ -40,27 +47,68 @@ abstract class BaseObserver implements ObserverInterface
         $this->logger = $logger;
         $this->config = $config;
         $this->eventEmitter = $eventEmitter;
+        $this->reflectionClass = null;
+    }
+
+    /**
+     * Get reflation class
+     *
+     * @return ReflectionClass|null
+     */
+    private function getReflectionClass() {
+        if ($this->reflectionClass  !== null) {
+            return $this->reflectionClass;
+        }
+        try{
+            $this->reflectionClass =new ReflectionClass($this);
+        } catch (\ReflectionException $error) {
+            $this->logger->logException($error);
+            return null;
+        }
+        if ($this->reflectionClass->getShortName() === 'Interceptor') {
+            $this->reflectionClass = $this->reflectionClass->getParentClass();
+        };
+        return $this->reflectionClass;
     }
 
     /**
      * @inheritDoc
      */
-    public function getEventName(){
-        $className = null;
-        try{
-            $reflectionClass = new \ReflectionClass($this);
-            if ($reflectionClass->getShortName() === 'Interceptor') {
-                $reflectionClass = $reflectionClass->getParentClass();
-            }
-            $className = $reflectionClass->getConstant('EVENT_NAME');
-            if ($className === null || $className === false) {
-                $namespaces = explode('\\', $reflectionClass->getNamespaceName());
-                $className = array_pop($namespaces).$reflectionClass->getShortName();
-            }
-        }catch (\ReflectionException $error) {
-            $this->logger->logException($error);
+    public function getEventName() {
+        $eventName = null;
+        $reflectionClass = $this->getReflectionClass();
+        if ($reflectionClass === null) {
+            return null;
         }
-        return $className;
+        $eventName = $reflectionClass->getConstant('EVENT_NAME');
+        return $eventName ?? $reflectionClass->getShortName();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getScopeName() {
+        $scopeName = null;
+        $reflectionClass = $this->getReflectionClass();
+        if ($reflectionClass === null) {
+            return null;
+        }
+        $scopeName = $reflectionClass->getConstant('SCOPE_NAME');
+        if ($scopeName === null || $scopeName === false) {
+            $namespaces = explode('\\', $reflectionClass->getNamespaceName());
+            $scopeName = array_pop($namespaces); // get first namespace
+        }
+        return $scopeName;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFullEventName() {
+        $eventName = $this->getEventName();
+        $scopeName = $this->getScopeName();
+
+        return ($scopeName ?? '') . $eventName;
     }
 
     /**

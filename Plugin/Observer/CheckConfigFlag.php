@@ -1,11 +1,11 @@
 <?php
-namespace Bitbull\Mimmo\Plugin;
+namespace Bitbull\AWSEventBridge\Plugin\Observer;
 
-use Bitbull\Mimmo\Api\Service\ConfigInterface;
-use Bitbull\Mimmo\Api\Service\LoggerInterface;
-use Bitbull\Mimmo\Api\ObserverInterface;
+use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
+use Bitbull\AWSEventBridge\Api\Service\LoggerInterface;
+use Bitbull\AWSEventBridge\Api\ObserverInterface;
 
-class Observer
+class CheckConfigFlag
 {
     /**
      * @var LoggerInterface
@@ -30,19 +30,25 @@ class Observer
     }
 
     /**
+     * Around observer execute
+     *
      * @param ObserverInterface $subject
      * @param callable $proceed
+     * @param \Magento\Framework\Event\Observer $observer
      * @return mixed
      */
     public function aroundExecute(ObserverInterface $subject, callable $proceed, \Magento\Framework\Event\Observer $observer)
     {
         $eventName = $subject->getEventName();
-        if ($this->config->isEventEnabled($eventName) === false) {
-            $this->logger->debug("Event '$eventName' disabled, skipping emitter");
+        $scopeName = $subject->getScopeName();
+        $identifier = ($scopeName.'/' ?? '') . $eventName;
+
+        if ($this->config->isEventEnabled($eventName, $scopeName) === false) {
+            $this->logger->debug("Event '$identifier' disabled, skipping emitter");
             return null;
         }
 
-        $this->logger->debug("Event '$eventName' captured, emitting..");
+        $this->logger->debug("Event '$identifier' captured, executing..");
         $start = microtime(true);
         try{
             $result = $proceed($observer);
@@ -51,7 +57,7 @@ class Observer
             return null;
         }
         $timeElapsedSecs = round(microtime(true) - $start, 3);
-        $this->logger->debug("Event '$eventName' emitted in ${timeElapsedSecs}s");
+        $this->logger->debug("Event '$identifier' executed in ${timeElapsedSecs}s");
         return $result;
     }
 }

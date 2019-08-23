@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <section id="mimmo" translate="label" sortOrder="9000" showInDefault="1" showInWebsite="1" showInStore="1">
+        <section id="aws_eventbridge" translate="label" sortOrder="9000" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
-            <label>Mimmo Serverless</label>
+            <label>AWS EventBridge</label>
             <tab>service</tab>
-            <resource>Bitbull_Mimmo::config</resource>
+            <resource>Bitbull_AWSEventBridge::config</resource>
             <group id="credentials" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Credentials</label>
                 <field id="region" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -25,43 +25,122 @@
                     <comment><![CDATA[If empty will be used the store's domain name]]></comment>
                 </field>
             </group>
-            <group id="log" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Logging</label>
+            <group id="dev" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Developer</label>
                 <field id="debug_mode" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Debug mode</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="dry_run_mode" translate="label" type="select" sortOrder="2" showInDefault="2" showInWebsite="2" showInStore="2">
+                    <label>Dry run mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
             </group>
-            <group id="events" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Event Bus</label>
-                <field id="cart_product_added" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="events_cart" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Cart events</label>
+                <field id="product_added" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>CartProductAdded</label>
                     <comment><![CDATA[A product is added to cart by a customer]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="cart_product_updated" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="product_updated" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>CartProductUpdated</label>
                     <comment><![CDATA[A cart is updated by a customer]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="cart_product_removed" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="product_removed" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>CartProductRemoved</label>
                     <comment><![CDATA[A product is removed from cart by a customer]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="new_order" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>NewOrder</label>
-                    <comment><![CDATA[A new order is placed by a customer]]></comment>
+            </group>
+            <group id="events_user" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Admin user events</label>
+                <field id="logged_in" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>UserLoggedIn</label>
+                    <comment><![CDATA[An admin user logged in]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="user_logged" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>UserLogged</label>
-                    <comment><![CDATA[A customer is logged]]></comment>
+                <field id="logged_out" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>UserLoggedOut</label>
+                    <comment><![CDATA[An admin user logged out]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="user_registered" type="select" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>UserRegistered</label>
-                    <comment><![CDATA[A new customer is registered]]></comment>
+                <field id="login_failed" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>UserLoginFailed</label>
+                    <comment><![CDATA[An admin user failed login]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="events_customer" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Customers events</label>
+                <field id="logged_in" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CustomerLoggedIn</label>
+                    <comment><![CDATA[A customer user logged in]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="logged_out" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CustomerLoggedOut</label>
+                    <comment><![CDATA[A customer user logged out]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="customer_login_failed" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CustomerLoginFailed</label>
+                    <comment><![CDATA[A customer user failed login]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="customer_signed_up" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CustomerSignedUp</label>
+                    <comment><![CDATA[A customer user sign up]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="customer_signed_up_failed" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CustomerSignedUpFailed</label>
+                    <comment><![CDATA[A customer user failed sign up]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="events_newsletter" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Newsletter events</label>
+                <field id="subscription_changed" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>NewsletterSubscriptionChanged</label>
+                    <comment><![CDATA[A customer user change newsletter subscription preference]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="events_order" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Order events</label>
+                <field id="placed" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>OrderPlaced</label>
+                    <comment><![CDATA[A customer place a new order]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="events_cache" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Cache events</label>
+                <field id="flush_all" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CacheFlushAll</label>
+                    <comment><![CDATA[An admin user flush the cache]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="flush_system" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CacheFlushSystem</label>
+                    <comment><![CDATA[An admin user flush system cache]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="flush_catalog_images" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CacheFlushCatalogImages</label>
+                    <comment><![CDATA[An admin user flush catalog images cache]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="flush_media" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CacheFlushMedia</label>
+                    <comment><![CDATA[An admin user flush media cache]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="flush_static_files" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CacheFlushStaticFiles</label>
+                    <comment><![CDATA[An admin user flush static files cache]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
