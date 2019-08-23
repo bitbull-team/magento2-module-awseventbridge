@@ -14,9 +14,9 @@ class Logger implements LoggerInterface
     protected $logger = null;
 
     /**
-     * @var ConfigInterface
+     * @var boolean
      */
-    protected $config;
+    protected $debugMode;
 
     /**
      * @param Monolog $logger
@@ -25,7 +25,7 @@ class Logger implements LoggerInterface
     public function __construct(Monolog $logger, ConfigInterface $config)
     {
         $this->logger = $logger;
-        $this->config = $config;
+        $this->debugMode = $config->isDebugModeEnabled();
     }
 
     /**
@@ -44,7 +44,7 @@ class Logger implements LoggerInterface
      */
     public function logException($exception)
     {
-        $this->log($exception->__toString(), Monolog::CRITICAL);
+        $this->log((string)$exception, Monolog::CRITICAL);
     }
 
     /**
@@ -52,7 +52,7 @@ class Logger implements LoggerInterface
      */
     public function debug($message, $context = [])
     {
-        if ($this->config->isDebugModeEnabled()) {
+        if ($this->debugMode) {
             $this->log($message, Monolog::DEBUG, $context);
         }
     }
@@ -62,7 +62,7 @@ class Logger implements LoggerInterface
      */
     public function error($message, $context = [])
     {
-        if ($this->config->isDebugModeEnabled()) {
+        if ($this->debugMode) {
             $this->log($message, Monolog::ERROR, $context);
         }
     }
@@ -72,7 +72,7 @@ class Logger implements LoggerInterface
      */
     public function warn($message, $context = [])
     {
-        if ($this->config->isDebugModeEnabled()) {
+        if ($this->debugMode) {
             $this->log($message, Monolog::WARNING, $context);
         }
     }
@@ -82,7 +82,7 @@ class Logger implements LoggerInterface
      */
     public function info($message, $context = [])
     {
-        if ($this->config->isDebugModeEnabled()) {
+        if ($this->debugMode) {
             $this->log($message, Monolog::INFO, $context);
         }
     }

@@ -6,6 +6,7 @@ use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
 use Bitbull\AWSEventBridge\Api\Service\EventEmitterInterface;
 use Bitbull\AWSEventBridge\Api\Service\LoggerInterface;
 use Aws\CloudWatchEvents\CloudWatchEventsClient;
+use Aws\EventBridge\EventBridgeClient;
 use Bitbull\AWSEventBridge\Api\Service\TrackingInterface;
 use Magento\Framework\Serialize\Serializer\Json as SerializerJson;
 
@@ -17,24 +18,45 @@ class EventEmitter implements EventEmitterInterface
     private $logger;
 
     /**
-     * @var ConfigInterface
-     */
-    protected $config;
-
-    /**
      * @var SerializerJson
      */
-    protected $serializerJson;
+    private $serializerJson;
+
+    /**
+     * @var EventBridgeClient
+     */
+    private $eventBridgeClient;
 
     /**
      * @var CloudWatchEventsClient
      */
-    private $client;
+    private $cloudWatchEventClient;
 
     /**
      * @var TrackingInterface
      */
-    protected $tracking;
+    private $tracking;
+
+    /**
+     * @var string|null
+     */
+    private $source;
+
+    /**
+     * @var string|null
+     */
+    private $eventBus;
+
+    /**
+     * @var boolean
+     */
+    private $dryRun;
+
+    /**
+     * @var boolean
+     */
+    private $cloudWatchEventFallback;
+
     /**
      * Event emitter.
      *
@@ -51,20 +73,36 @@ class EventEmitter implements EventEmitterInterface
     )
     {
         $this->logger = $logger;
-        $this->config = $config;
         $this->serializerJson = $serializerJson;
         $this->tracking = $tracking;
 
-        if ($this->config->isDryRunModeEnabled()) {
-            try {
-                $this->client = new CloudWatchEventsClient([
-                    'version' => '2015-10-07',
-                    'region' => $this->config->getRegion(),
-                    'credentials' => $this->config->getCredentials(),
-                ]);
-            } catch (\Exception $exception) {
-                $this->logger->logException($exception);
+        $this->source = $config->getSource();
+        $this->dryRun = $config->isDryRunModeEnabled();
+        $this->cloudWatchEventFallback = $config->isCloudWatchEventFallbackEnabled();
 
+        if ($this->dryRun === false) {
+            if ($this->cloudWatchEventFallback === false) {
+                $this->eventBus = $config->getEventBusName();
+                try {
+                    $this->eventBridgeClient = new EventBridgeClient([
+                        'version' => '2015-10-07',
+                        'region' => $config->getRegion(),
+                        'credentials' => $config->getCredentials(),
+                    ]);
+                } catch (\Exception $exception) {
+                    $this->logger->logException($exception);
+
+                }
+            } else {
+                try {
+                    $this->cloudWatchEventClient =  new CloudWatchEventsClient([
+                        'version' => '2015-10-07',
+                        'region' => $config->getRegion(),
+                        'credentials' => $config->getCredentials(),
+                    ]);
+                } catch (\Exception $exception) {
+                    $this->logger->logException($exception);
+                }
             }
         }
     }
@@ -77,24 +115,36 @@ class EventEmitter implements EventEmitterInterface
             'tracking' => $this->tracking->getTrackingParams()
         ];
 
-        if ($this->config->isDryRunModeEnabled()) {
+        if ($this->dryRun === true) {
             $this->logger->debug("[DryRun] Sending event '$eventName' with data: ".print_r($data, true));
             $this->logger->debug("[DryRun] Event '$eventName' sent with id 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'");
             return;
         }
 
-        $this->logger->debug("Sending event '$eventName' with data: ".print_r($data, true));
+        $data = [
+            'Source' => $this->source,
+            'Detail' => $this->serializerJson->serialize($data),
+            'DetailType' => $eventName,
+            'Resources' => [],
+            'Time' => time()
+        ];
         try {
-            $result = $this->client->putEvents([
-                'Entries' => [
-                    [
-                        'Source' => $this->config->getSource(),
-                        'Detail' => $this->serializerJson->serialize($data),
-                        'DetailType' => $eventName,
-                        'Resources' => []
-                    ]
-                ]
-            ]);
+            if ($this->cloudWatchEventFallback) {
+                if ($this->eventBus === null) {
+                    $this->logger->error('Configuration error: event bus name must be set if CloudWatch Event fallback is not active');
+                    return;
+                }
+                $this->logger->debug("Sending event '$eventName' to bus '$this->eventBus' with data: ".print_r($data, true));
+                $data['EventBusName'] = $this->eventBus;
+                $result = $this->eventBridgeClient->putEvents([
+                    'Entries' => [ $data ]
+                ]);
+            } else {
+                $this->logger->debug("Sending event '$eventName' with data: ".print_r($data, true));
+                $result = $this->cloudWatchEventClient->putEvents([
+                    'Entries' => [ $data ]
+                ]);
+            }
         }catch (\Exception $exception) {
             $this->logger->logException($exception);
             return;

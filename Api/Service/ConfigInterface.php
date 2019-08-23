@@ -26,6 +26,20 @@ interface ConfigInterface
     public function getSource();
 
     /**
+     * Get event bus name
+     *
+     * @return array
+     */
+    public function getEventBusName();
+
+    /**
+     * Check if CloudWatchEvent fallback is enabled
+     *
+     * @return boolean
+     */
+    public function isCloudWatchEventFallbackEnabled();
+
+    /**
      * Check if debug mode is enabled
      *
      * @return boolean

@@ -5,16 +5,20 @@ namespace Bitbull\AWSEventBridge\Model\Service;
 use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\CacheInterface;
 
 class Config implements ConfigInterface
 {
     const XML_PATH_GENERAL_STORE_URL = 'general/locale/code';
-    const XML_PATH_REGION = 'aws_eventbridge/credentials/region';
+
     const XML_PATH_ACCESS_KEY = 'aws_eventbridge/credentials/access_key';
     const XML_PATH_SECRET_ACCESS_KEY = 'aws_eventbridge/credentials/secret_access_key';
-    const XML_PATH_SOURCE = 'aws_eventbridge/credentials/source';
-    const XML_PATH_DEBUG_MODE = 'aws_eventbridge/dev/debug_mode';
-    const XML_PATH_DRY_RUN_MODE = 'aws_eventbridge/dev/dry_run_mode';
+    const XML_PATH_REGION = 'aws_eventbridge/options/region';
+    const XML_PATH_SOURCE = 'aws_eventbridge/options/source';
+    const XML_PATH_EVENT_BUS = 'aws_eventbridge/options/event_bus';
+    const XML_PATH_DEBUG_MODE = 'aws_eventbridge/options/debug_mode';
+    const XML_PATH_CLOUDWATCH_EVENT = 'aws_eventbridge/options/cloudwatch_event_fallback';
+    const XML_PATH_DRY_RUN_MODE = 'aws_eventbridge/options/dry_run_mode';
 
     const XML_PATH_EVENT_PREFIX = 'aws_eventbridge/events_';
 
@@ -29,15 +33,25 @@ class Config implements ConfigInterface
     protected $storeManager;
 
     /**
+     * @var CacheInterface
+     */
+    protected $cache;
+
+    /**
      * Config constructor.
      *
      * @param ScopeConfigInterface $scopeConfig
      * @param StoreManagerInterface $storeManager
+     * @param CacheInterface $cache
      */
-    public function __construct(ScopeConfigInterface $scopeConfig, StoreManagerInterface $storeManager)
+    public function __construct(
+        ScopeConfigInterface $scopeConfig,
+        StoreManagerInterface $storeManager,
+        CacheInterface $cache)
     {
         $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
+        $this->cache = $cache;
     }
 
     /**
@@ -84,6 +98,22 @@ class Config implements ConfigInterface
     /**
      * @inheritdoc
      */
+    public function getEventBusName()
+    {
+        return  $this->scopeConfig->getValue(self::XML_PATH_EVENT_BUS, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isCloudWatchEventFallbackEnabled()
+    {
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_CLOUDWATCH_EVENT);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function isDebugModeEnabled()
     {
         return $this->scopeConfig->isSetFlag(self::XML_PATH_DEBUG_MODE);
@@ -102,9 +132,23 @@ class Config implements ConfigInterface
      */
     public function isEventEnabled($eventName, $scopeName = null)
     {
+        // Search for pre-cached value to avoid config name transformation
+        $cacheKey = self::XML_PATH_EVENT_PREFIX  . $scopeName . $eventName;
+        $cachedFlag = $this->cache->load($cacheKey);
+        if (is_string($cachedFlag) === true) {
+            return $cachedFlag === 'true';
+        }
+
+        // Check if event config is enabled
         $eventName = strtolower(preg_replace('/(?<!^|\\\)[A-Z]/', '_$0', $eventName)); // convert from CamelCase to snake_case
         $scopeName = $scopeName !== null ? strtolower(preg_replace('/(?<!^|\\\)[A-Z]/', '_$0', $scopeName)) : null; // convert from CamelCase to snake_case if not null
         $configName = $scopeName === null ? $eventName : "$scopeName/$eventName"; // concatenate scope and event name
-        return $this->scopeConfig->isSetFlag(self::XML_PATH_EVENT_PREFIX  . $configName);
+        $isEnable = $this->scopeConfig->isSetFlag(self::XML_PATH_EVENT_PREFIX  . $configName);
+
+        // Store in cache
+        $this->cache->save($isEnable === true ? 'true' : 'false', $cacheKey);
+
+        // Return value
+        return $isEnable;
     }
 }
