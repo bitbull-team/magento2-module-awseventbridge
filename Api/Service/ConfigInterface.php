@@ -40,6 +40,13 @@ interface ConfigInterface
     public function isCloudWatchEventFallbackEnabled();
 
     /**
+     * Check if tracking is enabled or not
+     *
+     * @return boolean
+     */
+    public function isTrackingEnabled();
+
+    /**
      * Check if debug mode is enabled
      *
      * @return boolean

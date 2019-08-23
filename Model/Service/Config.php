@@ -14,6 +14,7 @@ class Config implements ConfigInterface
     const XML_PATH_REGION = 'aws_eventbridge/options/region';
     const XML_PATH_SOURCE = 'aws_eventbridge/options/source';
     const XML_PATH_EVENT_BUS = 'aws_eventbridge/options/event_bus';
+    const XML_PATH_TRACKING = 'aws_eventbridge/options/tracking';
     const XML_PATH_DEBUG_MODE = 'aws_eventbridge/options/debug_mode';
     const XML_PATH_CLOUDWATCH_EVENT = 'aws_eventbridge/options/cloudwatch_event_fallback';
     const XML_PATH_DRY_RUN_MODE = 'aws_eventbridge/options/dry_run_mode';
@@ -107,6 +108,14 @@ class Config implements ConfigInterface
     public function isCloudWatchEventFallbackEnabled()
     {
         return $this->scopeConfig->isSetFlag(self::XML_PATH_CLOUDWATCH_EVENT);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isTrackingEnabled()
+    {
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_TRACKING);
     }
 
     /**

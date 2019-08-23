@@ -58,6 +58,11 @@ class EventEmitter implements EventEmitterInterface
     private $cloudWatchEventFallback;
 
     /**
+     * @var boolean
+     */
+    private $trackingEnabled;
+
+    /**
      * Event emitter.
      *
      * @param LoggerInterface $logger
@@ -79,6 +84,7 @@ class EventEmitter implements EventEmitterInterface
         $this->source = $config->getSource();
         $this->dryRun = $config->isDryRunModeEnabled();
         $this->cloudWatchEventFallback = $config->isCloudWatchEventFallbackEnabled();
+        $this->trackingEnabled = $config->isTrackingEnabled();
 
         if ($this->dryRun === false) {
             if ($this->cloudWatchEventFallback === false) {
@@ -110,35 +116,39 @@ class EventEmitter implements EventEmitterInterface
     /** @inheritDoc */
     public function send($eventName, $eventData)
     {
-        $data = [
-            'data' => $eventData,
-            'tracking' => $this->tracking->getTrackingParams()
-        ];
+        // Check if tracking is enabled, in case add client infos
+        if ($this->trackingEnabled === true) {
+            $eventData['tracking'] = $this->tracking->getTrackingParams();
+        }
 
+        // If dry run is enabled do a fake operation
         if ($this->dryRun === true) {
-            $this->logger->debug("[DryRun] Sending event '$eventName' with data: ".print_r($data, true));
+            $this->logger->debug("[DryRun] Sending event '$eventName' with data: ".print_r($eventData, true));
             $this->logger->debug("[DryRun] Event '$eventName' sent with id 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'");
             return;
         }
 
-        $data = [
+        // Elaborate event parameters
+        $eventEntry = [
             'Source' => $this->source,
-            'Detail' => $this->serializerJson->serialize($data),
+            'Detail' => $this->serializerJson->serialize($eventData),
             'DetailType' => $eventName,
             'Resources' => [],
             'Time' => time()
         ];
         try {
-            if ($this->cloudWatchEventFallback) {
-                $this->logger->debug("Sending event '$eventName' to bus '" . ( $this->eventBus ?? '') . "' with data: ".print_r($data, true));
-                $data['EventBusName'] = $this->eventBus;
+            if ($this->cloudWatchEventFallback === false) {
+                // Send event using EventBridge
+                $this->logger->debug("Sending event '$eventName' to bus '" . ( $this->eventBus ?? '') . "' with data: ".print_r($eventData, true));
+                $eventEntry['EventBusName'] = $this->eventBus;
                 $result = $this->eventBridgeClient->putEvents([
-                    'Entries' => [ $data ]
+                    'Entries' => [ $eventEntry ]
                 ]);
             } else {
-                $this->logger->debug("Sending event '$eventName' with data: ".print_r($data, true));
+                // Send event using CloudWatch Event
+                $this->logger->debug("Sending event '$eventName' with data: ".print_r($eventData, true));
                 $result = $this->cloudWatchEventClient->putEvents([
-                    'Entries' => [ $data ]
+                    'Entries' => [ $eventEntry ]
                 ]);
             }
         }catch (\Exception $exception) {

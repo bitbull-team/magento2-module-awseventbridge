@@ -70,6 +70,11 @@ class Tracking implements TrackingInterface
     protected $isInConsole = false;
 
     /**
+     * @var mixed
+     */
+    protected $cachedParameter = null;
+
+    /**
      * Tracking constructor.
      *
      * @param LoggerInterface $logger
@@ -222,7 +227,13 @@ class Tracking implements TrackingInterface
      */
     public function getTrackingParams()
     {
-        $params = [
+        // Can be cached in memory during the request, the client is the same
+        if ($this->cachedParameter !== null) {
+            return $this->cachedParameter;
+        }
+
+        // Elaborate tracking parameters
+        $this->cachedParameter = [
             'transport' => $this->isInConsole === false ? 'HTTP' : 'SHELL',
             'hostname' => gethostname(),
             'time' => round(microtime(true) * 1000),
@@ -235,11 +246,12 @@ class Tracking implements TrackingInterface
             'user' => $this->getCurrentUserName()
         ];
 
+        // If the request is HTTP add IP and user agent
         if ($this->isInConsole === false) {
-            $params['ip'] = $this->getRemoteAddr();
-            $params['userAgent'] = $this->getUserAgent();
+            $this->cachedParameter['ip'] = $this->getRemoteAddr();
+            $this->cachedParameter['userAgent'] = $this->getUserAgent();
         }
 
-        return $params;
+        return $this->cachedParameter;
     }
 }

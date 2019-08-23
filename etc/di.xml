@@ -26,6 +26,12 @@
         </arguments>
     </type>
 
+    <type name="Bitbull\AWSEventBridge\Model\Service\EventEmitter">
+        <arguments>
+            <argument name="tracking" xsi:type="object">Bitbull\AWSEventBridge\Model\Service\Tracking\Proxy</argument>
+        </arguments>
+    </type>
+
     <!-- Interfaces preference -->
 
     <preference for="Bitbull\AWSEventBridge\Api\Service\ConfigInterface"
