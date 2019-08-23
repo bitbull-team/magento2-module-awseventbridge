@@ -3,14 +3,13 @@
 namespace Bitbull\AWSEventBridge\Model\Service;
 
 use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
+use Magento\Config\App\Config\Type\System;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\CacheInterface;
 
 class Config implements ConfigInterface
 {
-    const XML_PATH_GENERAL_STORE_URL = 'general/locale/code';
-
     const XML_PATH_ACCESS_KEY = 'aws_eventbridge/credentials/access_key';
     const XML_PATH_SECRET_ACCESS_KEY = 'aws_eventbridge/credentials/secret_access_key';
     const XML_PATH_REGION = 'aws_eventbridge/options/region';
@@ -87,12 +86,12 @@ class Config implements ConfigInterface
             return $customSource;
         }
 
-        $storeUrl = $this->scopeConfig->getValue(self::XML_PATH_GENERAL_STORE_URL, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        if ($storeUrl === null) {
+        $storeUrl = $this->storeManager->getStore()->getBaseUrl();
+        if ($storeUrl !== null) {
             return parse_url($storeUrl, PHP_URL_HOST);
         }
 
-        return $_SERVER['HTTP_HOST'];
+        return $_SERVER['HTTP_HOST'] ?? null;
     }
 
     /**
@@ -135,8 +134,8 @@ class Config implements ConfigInterface
         // Search for pre-cached value to avoid config name transformation
         $cacheKey = self::XML_PATH_EVENT_PREFIX  . $scopeName . $eventName;
         $cachedFlag = $this->cache->load($cacheKey);
-        if (is_string($cachedFlag) === true) {
-            return $cachedFlag === 'true';
+        if ($cachedFlag !== false && is_string($cachedFlag) === true) {
+            return $cachedFlag === 'enabled';
         }
 
         // Check if event config is enabled
@@ -146,7 +145,9 @@ class Config implements ConfigInterface
         $isEnable = $this->scopeConfig->isSetFlag(self::XML_PATH_EVENT_PREFIX  . $configName);
 
         // Store in cache
-        $this->cache->save($isEnable === true ? 'true' : 'false', $cacheKey);
+        $this->cache->save($isEnable === true ? 'enabled' : 'disabled', $cacheKey, [
+            \Magento\Framework\App\Config::CACHE_TAG
+        ]);
 
         // Return value
         return $isEnable;
