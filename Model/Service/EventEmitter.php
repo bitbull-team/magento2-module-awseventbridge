@@ -130,11 +130,7 @@ class EventEmitter implements EventEmitterInterface
         ];
         try {
             if ($this->cloudWatchEventFallback) {
-                if ($this->eventBus === null) {
-                    $this->logger->error('Configuration error: event bus name must be set if CloudWatch Event fallback is not active');
-                    return;
-                }
-                $this->logger->debug("Sending event '$eventName' to bus '$this->eventBus' with data: ".print_r($data, true));
+                $this->logger->debug("Sending event '$eventName' to bus '" . ( $this->eventBus ?? '') . "' with data: ".print_r($data, true));
                 $data['EventBusName'] = $this->eventBus;
                 $result = $this->eventBridgeClient->putEvents([
                     'Entries' => [ $data ]

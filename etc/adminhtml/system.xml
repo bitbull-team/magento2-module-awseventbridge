@@ -29,7 +29,7 @@
                 </field>
                 <field id="event_bus" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Event bus name</label>
-                    <comment><![CDATA[The event bus name to send events to]]></comment>
+                    <comment><![CDATA[The event bus to associate with event rules. If you omit this, the default event bus is used]]></comment>
                     <depends>
                         <field id="cloudwatch_event_fallback">0</field>
                     </depends>
