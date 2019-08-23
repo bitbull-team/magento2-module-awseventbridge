@@ -3,7 +3,6 @@
 namespace Bitbull\AWSEventBridge\Model\Service;
 
 use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
-use Magento\Config\App\Config\Type\System;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\CacheInterface;
