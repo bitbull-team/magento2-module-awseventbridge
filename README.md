@@ -133,3 +133,73 @@ when using Magento CLI `user` is based on the system user that execute the comma
             )
     )
 ``` 
+
+### Supported Events
+
+Here a list of supported events that can be enabled:
+
+#### Cart events
+
+`CartProductAdded`
+A product is added to cart by a customer
+
+`CartProductUpdated`
+A cart is updated by a customer
+
+`CartProductRemoved`
+A product is removed from cart by a customer
+
+#### Admin user events
+
+`UserLoggedIn`
+An admin user logged in
+
+`UserLoggedOut`
+An admin user logged out
+
+`UserLoginFailed`
+An admin user failed login
+
+#### Customers events
+
+`CustomerLoggedIn`
+A customer user logged in
+
+`CustomerLoggedOut`
+A customer user logged out
+
+`CustomerLoginFailed`
+A customer user failed login
+
+`CustomerSignedUp`
+A customer user sign up
+
+`CustomerSignedUpFailed`
+A customer user failed sign up
+
+#### Newsletter events
+
+`NewsletterSubscriptionChanged`
+A customer user change newsletter subscription preference
+
+#### Order events
+
+`OrderPlaced`
+A customer place a new order
+
+#### Cache events
+
+`CacheFlushAll`
+An admin user flush the cache
+
+`CacheFlushSystem`
+An admin user flush system cache
+
+`CacheFlushCatalogImages`
+An admin user flush catalog images cache
+
+`CacheFlushMedia`
+An admin user flush media cache
+
+`CacheFlushStaticFiles`
+An admin user flush static files cache
