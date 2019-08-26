@@ -10,111 +10,117 @@ Install this module using composer:
 composer require bitbull/magento2-module-awseventbridge
 ```
 
+### IAM permissions required
+
+If you are using EC2 instance add these permission to your [IAM policy](https://docs.aws.amazon.com/en_us/AWSEC2/latest/UserGuide/iam-policies-for-amazon-ec2.html), 
+otherwise, create a new user and attach a new policy with these required permissions:
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "events:PutEvents"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "events:source": "example.com"
+        }
+      }
+    }
+  ]
+}
+```
+change `events:source` according to your module configuration.
+
+read more about IAM permissions at: 
+- https://docs.aws.amazon.com/en_us/AmazonCloudWatch/latest/events/auth-and-access-control-cwe.html
+- https://docs.aws.amazon.com/en_us/AmazonCloudWatch/latest/events/policy-keys-cwe.html
+
 ### Setup
 
 Go to "Stores" > "Configuration" > "Services" > "AWS EventBridge", then start configuring the credentials section:
 
 ![Credentials](./doc/imgs/config-credentials.png?raw=true)
 
+- Set access and secret key, leave empty if you are hosting code from EC2 instances, use [IAM role](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html) instead. 
+
+![Options](./doc/imgs/config-options.png?raw=true)
+
 - Set the correct region where you want to receive events, for example "eu-west-1".
-- Set access and secret key, leave empty if you are hosting code from EC2 instances, use [IAM role](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html) instead.
-- Set event source name with a value that can be filtered (`events:source`) when you connect to these events. 
-
-![Developers](./doc/imgs/config-developers.png?raw=true)
-
 - Enable debug mode if you want a more verbose logging in `var/log/aws-eventbridge.log` log file.
 - Enable dry run mode to activate the module actions and integrations without actually sending events data.
+- Set event source name with a value that can be filtered (`events:source`) when you connect to these events.
 
-![Events](./doc/imgs/config-events.png?raw=true)
+![Events](./doc/imgs/config-cart-events.png?raw=true)
 
-This section contain a list of supported events that can be activated and used to trigger Lambda functions.
-
-### Contributing
-
-If you want to add new events for this plugin keep in mind this rules:
-
-Observer classes should be placed in `Observer` directory and must extends `Bitbull\AWSEventBridge\Observer\BaseObserver` class.
-
-Register around plugin to your observer setting it into `etc/di.xml`:
-```xml
-<type name="Bitbull\AWSEventBridge\Observer\User\LoggedIn">
-    <plugin name="AroundEventUserLoggedIn" type="Bitbull\AWSEventBridge\Plugin\Observer" sortOrder="1" disabled="false"/>
-</type>
-```
-
-Connect Observer to events that you what to track setting it into `etc/frontend/events.xml` or `etc/adminhtml/events.xml` based on event scope.
-```xml
- <event name="backend_auth_user_login_success">
-    <observer name="awseventbridge_user_logged_in" instance="Bitbull\AWSEventBridge\Observer\User\LoggedIn" />
-</event>
-```
-
-Inside observer `execute()` method do you logic to collect data and then send it to CloudWatch using `eventEmitter` helper:
-```php
-    /**
-     * @param Observer $observer
-     * @return void
-     */
-    public function execute(Observer $observer)
-    {
-        $this->eventEmitter->send($this->getFullEventName(), [
-            'mydata' => [
-                'myprop' => 'myvalue'
-            ]
-        ]);
-    }
-```
-Elaborate event name using `$this->getEventName()`, this allow you to setup the event name into observer class as constant:
-```php
-const EVENT_NAME = 'UserLoggedIn';
-```
-or directly using the class name additionally to first namespace path, for example observer class named `Bitbull\AWSEventBridge\Observer\User\LoggedIn` becomes `UserLoggedIn`.
-
-Add your event into configuration section described in `etc/adminhtml/system.xml`. 
-Group and field id must follow this relation:
-- Last class namespace become the group id, after camel to snake case conversion and added 'events_' prefix. example: 'Cart\ProductAdded' -> group id is 'events_cart'.
-- Class name become the field id, after camel to snake case conversion. example: 'Cart\ProductAdded' -> field id is 'events_cart' .
-```xml
-<group id="events_order" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
-    <field id="placed" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
-        <label>OrderPlaced</label>
-        <comment><![CDATA[A customer place a new order]]></comment>
-        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-    </field>
-</group>
-```
-use `select` filed type with `Magento\Config\Model\Config\Source\Yesno` source model. The around plugin `Bitbull\AWSEventBridge\Plugin\Observer` automatically check by event name if this configuration is active or not.
-Configuration's name must follow the **snake_case** format, parsed from **CamelCase** group and event name before check.
+These sections contain a list of supported events that can be activated and used to trigger Lambda functions.
 
 ### Event data specification
 
-Event will be pass data into `data` object property:
+Event will be pass data into `Details` event property:
 ```php
-[data] => Array
-  (
-      [myprop] => 'myvalue'
-  )
+(
+    [sku] => WJ12-S-Blue
+    [qty] => 1
+    [tracking] => Array
+        (
+            [transport] => HTTP
+            [hostname] => f3a501ad4988
+            [time] => 1566821650383
+        )
+)
 ```
 
-Additionally every event will be enriched with `tracking` property that contain informations about client, session and framework, for example:
+Additionally (activating tracking option in backend options) every event will be enriched with `tracking` property that contain infos about client, session and framework, for example:
 ```php
 [tracking] => Array
     (
-        [ip] => '172.17.0.1'
-        [userAgent] => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0'
-        [time] => 1566311700467,
+        [transport] => HTTP
+        [hostname] => f3a501ad4988
+        [time] => 1566594699836
         [storeId] => 1
         [version] => Array
             (
-                [module] => 'dev-master'
-                [php] => '7.1.27-1+ubuntu16.04.1+deb.sury.org+1'
-                [magento] => '2.2.7'
+                [module] => dev-master
+                [php] => 7.1.27-1+ubuntu16.04.1+deb.sury.org+1
+                [magento] => 2.2.7
             )
         [user] => Array
             (
-                [id] => 2
-                [email] => 'fabio.gollinucci@bitbull.it'
+                [id] => 3
+                [username] => fabio.gollinucci
+                [email] => fabio.gollinucci@bitbull.it
             )
+        [ip] => 172.17.0.1
+        [userAgent] => Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0
     )
 ```
-ps: `user` will be NULL if user is not logged in.
+when using Magento CLI `user` is based on the system user that execute the command:
+```php
+[tracking] => Array
+    (
+        [transport] => SHELL
+        [hostname] => f3a501ad4988
+        [time] => 1566821355758
+        [storeId] => 1
+        [version] => Array
+            (
+                [module] => dev-master
+                [php] => 7.1.27-1+ubuntu16.04.1+deb.sury.org+1
+                [magento] => 2.2.7
+            )
+        [user] => Array
+            (
+                [name] => www-data
+                [passwd] => x
+                [uid] => 1000
+                [gid] => 33
+                [gecos] => www-data
+                [dir] => /var/www
+                [shell] => /usr/sbin/nologin
+            )
+    )
+``` 
