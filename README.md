@@ -2,6 +2,12 @@
 
 Event bridge to send Magento 2 events as AWS CloudWatch Events to be able to connect many different AWS serverless services.
 
+![Packagist](https://img.shields.io/packagist/v/bitbull/magento2-module-awseventbridge)
+
+![Magento](https://img.shields.io/badge/magento-~2.2.7-orange)
+
+![PHP](https://img.shields.io/packagist/php-v/bitbull/magento2-module-awseventbridge)
+
 ### Installation Instructions
 
 Install this module using composer: 
