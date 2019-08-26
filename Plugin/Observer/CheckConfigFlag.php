@@ -39,6 +39,7 @@ class CheckConfigFlag
      */
     public function aroundExecute(ObserverInterface $subject, callable $proceed, \Magento\Framework\Event\Observer $observer)
     {
+        $start = microtime(true);
         $eventName = $subject->getEventName();
         $scopeName = $subject->getScopeName();
         $identifier = ($scopeName.'/' ?? '') . $eventName;
@@ -49,7 +50,6 @@ class CheckConfigFlag
         }
 
         $this->logger->debug("Event '$identifier' captured, executing..");
-        $start = microtime(true);
         try{
             $result = $proceed($observer);
         }catch (\Exception $exception) {
