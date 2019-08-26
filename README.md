@@ -50,9 +50,12 @@ Go to "Stores" > "Configuration" > "Services" > "AWS EventBridge", then start co
 ![Options](./doc/imgs/config-options.png?raw=true)
 
 - Set the correct region where you want to receive events, for example "eu-west-1".
-- Enable debug mode if you want a more verbose logging in `var/log/aws-eventbridge.log` log file.
-- Enable dry run mode to activate the module actions and integrations without actually sending events data.
 - Set event source name with a value that can be filtered (`events:source`) when you connect to these events.
+- Set event bus name, leave empty to use your account default.
+- Enable tracking to add `tracking` property to data object.
+- Enable debug mode if you want a more verbose logging in `var/log/aws-eventbridge.log` log file.
+- Enable CloudWatch Events fallback to use this service instead of EventBridge (for backward compatibility).
+- Enable dry run mode to activate the module actions and integrations without actually sending events data.
 
 ![Events](./doc/imgs/config-cart-events.png?raw=true)
 
