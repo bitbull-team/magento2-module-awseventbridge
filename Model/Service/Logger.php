@@ -62,9 +62,7 @@ class Logger implements LoggerInterface
      */
     public function error($message, $context = [])
     {
-        if ($this->debugMode) {
-            $this->log($message, Monolog::ERROR, $context);
-        }
+        $this->log($message, Monolog::ERROR, $context);
     }
 
     /**
@@ -72,9 +70,7 @@ class Logger implements LoggerInterface
      */
     public function warn($message, $context = [])
     {
-        if ($this->debugMode) {
-            $this->log($message, Monolog::WARNING, $context);
-        }
+        $this->log($message, Monolog::WARNING, $context);
     }
 
     /**
@@ -82,8 +78,6 @@ class Logger implements LoggerInterface
      */
     public function info($message, $context = [])
     {
-        if ($this->debugMode) {
-            $this->log($message, Monolog::INFO, $context);
-        }
+        $this->log($message, Monolog::INFO, $context);
     }
 }
