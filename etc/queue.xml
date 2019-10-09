@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:MessageQueue/etc/queue.xsd">
+    <broker topic="aws.eventbridge.events" type="amqp" exchange="magento">
+        <queue name="aws.eventbridge.events.to.send" consumer="sync.consumer" />
+    </broker>
+</config>

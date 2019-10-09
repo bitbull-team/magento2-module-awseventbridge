@@ -160,6 +160,14 @@ class Tracking implements TrackingInterface
     /**
      * @inheritdoc
      */
+    public function getMagentoEdition()
+    {
+        return $this->productMetadata->getEdition();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getRemoteAddr()
     {
         $remoteAddr = $this->request->getClientIp(true);
@@ -247,7 +255,7 @@ class Tracking implements TrackingInterface
             'version' => [
                 'module' => $this->getModuleVersion(),
                 'php' => $this->getPHPVersion(),
-                'magento' => $this->getMagentoVersion()
+                'magento' => $this->getMagentoVersion() . $this->getMagentoEdition()
             ],
             'user' => $this->getCurrentUserName()
         ];

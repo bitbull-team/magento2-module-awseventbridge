@@ -9,9 +9,12 @@ use Aws\CloudWatchEvents\CloudWatchEventsClient;
 use Aws\EventBridge\EventBridgeClient;
 use Bitbull\AWSEventBridge\Api\Service\TrackingInterface;
 use Magento\Framework\Serialize\Serializer\Json as SerializerJson;
+use Magento\Framework\App\ObjectManager;
 
 class EventEmitter implements EventEmitterInterface
 {
+    const QUEUE_NAME = 'aws.eventbridge.events.to.send';
+
     /**
      * @var LoggerInterface
      */
@@ -20,7 +23,7 @@ class EventEmitter implements EventEmitterInterface
     /**
      * @var SerializerJson
      */
-    private $serializerJson;
+    protected $serializerJson;
 
     /**
      * @var EventBridgeClient
@@ -36,6 +39,16 @@ class EventEmitter implements EventEmitterInterface
      * @var TrackingInterface
      */
     private $tracking;
+
+    /**
+     * @var ObjectManager
+     */
+    private $objManager;
+
+    /**
+     * @var \Magento\Framework\MessageQueue\PublisherInterface
+     */
+    private $publisher;
 
     /**
      * @var string|null
@@ -63,6 +76,11 @@ class EventEmitter implements EventEmitterInterface
     private $trackingEnabled;
 
     /**
+     * @var boolean
+     */
+    private $queueMode;
+
+    /**
      * Event emitter.
      *
      * @param LoggerInterface $logger
@@ -75,8 +93,7 @@ class EventEmitter implements EventEmitterInterface
         ConfigInterface $config,
         SerializerJson $serializerJson,
         TrackingInterface $tracking
-    )
-    {
+    ) {
         $this->logger = $logger;
         $this->serializerJson = $serializerJson;
         $this->tracking = $tracking;
@@ -85,6 +102,15 @@ class EventEmitter implements EventEmitterInterface
         $this->dryRun = $config->isDryRunModeEnabled();
         $this->cloudWatchEventFallback = $config->isCloudWatchEventFallbackEnabled();
         $this->trackingEnabled = $config->isTrackingEnabled();
+
+        if ($config->isQueueModeEnabled() && $tracking->getMagentoEdition() === 'Enterprise') {
+            // Dynamically load queue publisher based on Magento edition
+            $objManager = ObjectManager::getInstance();
+            $this->publisher = $objManager->create('\Magento\Framework\MessageQueue\PublisherInterface');
+            $this->queueMode = true;
+        } else {
+            $this->queueMode = false;
+        }
 
         if ($this->dryRun === false) {
             if ($this->cloudWatchEventFallback === false) {
@@ -115,6 +141,46 @@ class EventEmitter implements EventEmitterInterface
 
     /** @inheritDoc */
     public function send($eventName, $eventData)
+    {
+        if ($this->queueMode === true) {
+            $this->addEventToQueue($eventName, $eventData);
+        } else {
+            $this->sendImmediately($eventName, $eventData);
+        }
+    }
+
+    /**
+     * Add event to queue
+     *
+     * @param $eventName
+     * @param $eventData
+     */
+    protected function addEventToQueue($eventName, $eventData)
+    {
+        if ($this->publisher === null) {
+            $this->logger->error("No queue publisher set, 'addEventToQueue' method cannot work");
+            return;
+        }
+        $this->logger->debug("Adding event '$eventName' to queue '". self::QUEUE_NAME ."' with data: ".print_r($eventData, true));
+        try {
+            $this->publisher->publish(self::QUEUE_NAME, $this->serializerJson->serialize([
+                'name' => $eventName,
+                'data' => $eventData
+            ]));
+        } catch (\Exception $exception) {
+            $this->logger->logException($exception);
+            return;
+        }
+        $this->logger->debug("Event '$eventName' added to queue '". self::QUEUE_NAME . "'");
+    }
+
+    /**
+     * Send event
+     *
+     * @param $eventName
+     * @param $eventData
+     */
+    protected function sendImmediately($eventName, $eventData)
     {
         // Check if tracking is enabled, in case add client infos
         if ($this->trackingEnabled === true) {

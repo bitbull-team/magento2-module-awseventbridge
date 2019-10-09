@@ -1,0 +1,5 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:communication/etc/communication.xsd">
+    <topic name="aws.eventbridge.events" request="string" response="string">
+        <handler name="aws.eventbridge.events.handler" type="Magento\SampleMessageQueue\Model\Handler\Sync\AddGiftCardAccount" method="processQueueMessage" />
+    </topic>
+</config>
