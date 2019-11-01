@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Bitbull\AWSEventBridge\Observer;
+namespace Bitbull\AWSEventBridge\Model\Handler\Events;
 
 use Bitbull\AWSEventBridge\Model\Service\EventEmitter;
 

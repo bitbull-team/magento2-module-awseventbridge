@@ -154,6 +154,9 @@ class Tracking implements TrackingInterface
      */
     public function getMagentoVersion()
     {
+        if ($this->productMetadata === null) {
+            return null;
+        }
         return $this->productMetadata->getVersion();
     }
 
@@ -162,6 +165,9 @@ class Tracking implements TrackingInterface
      */
     public function getMagentoEdition()
     {
+        if ($this->productMetadata === null) {
+            return null;
+        }
         return $this->productMetadata->getEdition();
     }
 
@@ -255,7 +261,7 @@ class Tracking implements TrackingInterface
             'version' => [
                 'module' => $this->getModuleVersion(),
                 'php' => $this->getPHPVersion(),
-                'magento' => $this->getMagentoVersion() . $this->getMagentoEdition()
+                'magento' => $this->getMagentoVersion() ? $this->getMagentoVersion() . $this->getMagentoEdition() : null
             ],
             'user' => $this->getCurrentUserName()
         ];

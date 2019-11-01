@@ -13,7 +13,7 @@ use Magento\Framework\App\ObjectManager;
 
 class EventEmitter implements EventEmitterInterface
 {
-    const QUEUE_NAME = 'aws.eventbridge.events.to.send';
+    const TOPIC_NAME = 'async.V1.aws.eventbridge.events.SEND';
 
     /**
      * @var LoggerInterface
@@ -39,11 +39,6 @@ class EventEmitter implements EventEmitterInterface
      * @var TrackingInterface
      */
     private $tracking;
-
-    /**
-     * @var ObjectManager
-     */
-    private $objManager;
 
     /**
      * @var \Magento\Framework\MessageQueue\PublisherInterface
@@ -103,7 +98,7 @@ class EventEmitter implements EventEmitterInterface
         $this->cloudWatchEventFallback = $config->isCloudWatchEventFallbackEnabled();
         $this->trackingEnabled = $config->isTrackingEnabled();
 
-        if ($config->isQueueModeEnabled() && $tracking->getMagentoEdition() === 'Enterprise') {
+        if (\class_exists('\Magento\Framework\MessageQueue\Publisher') && $config->isQueueModeEnabled()) {
             // Dynamically load queue publisher based on Magento edition
             $objManager = ObjectManager::getInstance();
             $this->publisher = $objManager->create('\Magento\Framework\MessageQueue\PublisherInterface');
@@ -161,17 +156,19 @@ class EventEmitter implements EventEmitterInterface
             $this->logger->error("No queue publisher set, 'addEventToQueue' method cannot work");
             return;
         }
-        $this->logger->debug("Adding event '$eventName' to queue '". self::QUEUE_NAME ."' with data: ".print_r($eventData, true));
+        $this->logger->debug("Publish event '$eventName' to topic '". self::TOPIC_NAME ."' with data: ".print_r($eventData, true));
         try {
-            $this->publisher->publish(self::QUEUE_NAME, $this->serializerJson->serialize([
-                'name' => $eventName,
-                'data' => $eventData
-            ]));
+            $this->publisher->publish(self::TOPIC_NAME, [
+                $this->serializerJson->serialize([
+                    'name' => $eventName,
+                    'data' => $eventData
+                ])
+            ]);
         } catch (\Exception $exception) {
             $this->logger->logException($exception);
             return;
         }
-        $this->logger->debug("Event '$eventName' added to queue '". self::QUEUE_NAME . "'");
+        $this->logger->debug("Event '$eventName' added to queue");
     }
 
     /**
