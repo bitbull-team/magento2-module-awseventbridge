@@ -67,12 +67,12 @@
                 <field id="debug_mode" translate="label" type="select" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Debug mode</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment><![CDATA[[for developers] Enable more verbose logging]]></comment>
+                    <comment><![CDATA[[for developers] Enable more verbose logging.]]></comment>
                 </field>
                 <field id="dry_run_mode" translate="label" type="select" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Dry run mode</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment><![CDATA[[for developers] If enabled not events will be sent]]></comment>
+                    <comment><![CDATA[[for developers] If enabled, events will not be sent.]]></comment>
                 </field>
             </group>
             <group id="events_cart" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
