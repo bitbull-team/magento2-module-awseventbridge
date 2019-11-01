@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace Bitbull\AWSEventBridge\Model\Logger;
 
 use Magento\Framework\Logger\Handler\Base;

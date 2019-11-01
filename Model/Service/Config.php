@@ -3,12 +3,14 @@
 namespace Bitbull\AWSEventBridge\Model\Service;
 
 use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
+use Bitbull\AWSEventBridge\Model\Adminhtml\System\Config\Source\AuthenticationTypes;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\CacheInterface;
 
 class Config implements ConfigInterface
 {
+    const XML_PATH_CREDENTIALS_TYPE = 'aws_eventbridge/credentials/type';
     const XML_PATH_ACCESS_KEY = 'aws_eventbridge/credentials/access_key';
     const XML_PATH_SECRET_ACCESS_KEY = 'aws_eventbridge/credentials/secret_access_key';
     const XML_PATH_REGION = 'aws_eventbridge/options/region';
@@ -70,6 +72,11 @@ class Config implements ConfigInterface
      */
     public function getCredentials()
     {
+        $credentialType = (string) $this->scopeConfig->getValue(self::XML_PATH_CREDENTIALS_TYPE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        if ($credentialType !== null && $credentialType !== AuthenticationTypes::TYPE_KEYS) {
+            return [];
+        }
+
         return [
             'key' => (string) $this->scopeConfig->getValue(self::XML_PATH_ACCESS_KEY, \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
             'secret' => (string) $this->scopeConfig->getValue(self::XML_PATH_SECRET_ACCESS_KEY, \Magento\Store\Model\ScopeInterface::SCOPE_STORE),

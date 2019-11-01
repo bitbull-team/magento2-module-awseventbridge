@@ -1,6 +1,6 @@
 ## Magento 2 module AWS EventBridge integration
 
-Event bridge to send Magento 2 events as AWS CloudWatch Events to be able to connect many different AWS serverless services.
+Send Magento's events to [Amazon EventBridge](https://aws.amazon.com/eventbridge/) service to be able to integrate Magento with many different AWS serverless services. 
 
 ![Packagist](https://img.shields.io/packagist/v/bitbull/magento2-module-awseventbridge)
 
@@ -8,7 +8,7 @@ Event bridge to send Magento 2 events as AWS CloudWatch Events to be able to con
 
 ![PHP](https://img.shields.io/packagist/php-v/bitbull/magento2-module-awseventbridge)
 
-### Installation Instructions
+## Installation Instructions
 
 Install this module using composer: 
 
@@ -16,10 +16,9 @@ Install this module using composer:
 composer require bitbull/magento2-module-awseventbridge
 ```
 
-### IAM permissions required
+## IAM permissions required
 
-If you are using EC2 instance add these permission to your [IAM policy](https://docs.aws.amazon.com/en_us/AWSEC2/latest/UserGuide/iam-policies-for-amazon-ec2.html), 
-otherwise, create a new user and attach a new policy with these required permissions:
+Create a new [IAM Policy](https://docs.aws.amazon.com/en_us/AWSEC2/latest/UserGuide/iam-policies-for-amazon-ec2.html) with these content:
 ```json
 {
   "Version": "2012-10-17",
@@ -45,13 +44,43 @@ read more about IAM permissions at:
 - https://docs.aws.amazon.com/en_us/AmazonCloudWatch/latest/events/auth-and-access-control-cwe.html
 - https://docs.aws.amazon.com/en_us/AmazonCloudWatch/latest/events/policy-keys-cwe.html
 
-### Setup
+If you are using EC2 instance add this policy to attached [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html).
 
-Go to "Stores" > "Configuration" > "Services" > "AWS EventBridge", then start configuring the credentials section:
+read more about using IAM Role with EC2 at:
+- https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
 
-![Credentials](./doc/imgs/config-credentials.png?raw=true)
+If your are running Magento locally, on-premises or with an other Cloud Provider different from AWS follow these steps:
 
-- Set access and secret key, leave empty if you are hosting code from EC2 instances, use [IAM role](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html) instead. 
+1. Create a new [AWS IAM User](https://docs.aws.amazon.com/en_us/IAM/latest/UserGuide/id_users.html)
+2. Attach the created policy
+3. Generate access keys for the user
+
+read more about creating IAM users at:
+- https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html
+- https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_change-permissions.html
+- https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html
+
+## Setup
+
+Go to "Stores" > "Configuration" > "Services" > "AWS EventBridge", then start configuring this module.
+
+### Credentials
+
+You can set your access keys for IAM Users:  
+
+![Credentials keys](./doc/imgs/config-credentials-keys.png?raw=true)
+
+Retrieving from environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:
+
+![Credentials env](./doc/imgs/config-credentials-env.png?raw=true)
+
+Using EC2 Instance Role:
+
+![Credentials ec2](./doc/imgs/config-credentials-ec2.png?raw=true)
+
+### Options
+
+Edit module options:
 
 ![Options](./doc/imgs/config-options.png?raw=true)
 
@@ -67,7 +96,11 @@ Go to "Stores" > "Configuration" > "Services" > "AWS EventBridge", then start co
 
 These sections contain a list of supported events that can be activated and used to trigger Lambda functions.
 
-### Event data specification
+## Events 
+
+This module inject observers to listen to Magento 2 events, elaborate the payload and then send the event to AWS services.
+
+### Data specification
 
 Event will be pass data into `Details` event property:
 ```php
