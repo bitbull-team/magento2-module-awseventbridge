@@ -163,6 +163,24 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
+            <group id="events_cron" translate="label" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Cron events</label>
+                <field id="started" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CronStarted</label>
+                    <comment><![CDATA[A cron job started]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="finished_error" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CronFinishedError</label>
+                    <comment><![CDATA[A cron job finished with errors]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="finished_success" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CronFinishedSuccess</label>
+                    <comment><![CDATA[A cron job finished successfully]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
         </section>
     </system>
 </config>

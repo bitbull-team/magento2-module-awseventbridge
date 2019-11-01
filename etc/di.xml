@@ -43,6 +43,11 @@
     <preference for="Bitbull\AWSEventBridge\Api\Service\TrackingInterface"
                 type="Bitbull\AWSEventBridge\Model\Service\Tracking" />
 
+    <!-- Models overrides -->
+
+    <preference for="Magento\Cron\Observer\ProcessCronQueueObserver"
+                type="Bitbull\AWSEventBridge\Model\Rewrite\Cron\Observer\ProcessCronQueueObserver" />
+
     <!-- Observers cart -->
 
     <type name="Bitbull\AWSEventBridge\Observer\Cart\ProductAdded">
@@ -116,6 +121,18 @@
     </type>
     <type name="Bitbull\AWSEventBridge\Observer\Cache\FlushStaticFiles">
         <plugin name="AroundEventOrderPlaced" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+
+    <!-- Observers cron -->
+
+    <type name="Bitbull\AWSEventBridge\Observer\Cron\Started">
+        <plugin name="AroundEventCronStarted" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Cron\FinishedError">
+        <plugin name="AroundEventCronFinishedError" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Cron\FinishedSuccess">
+        <plugin name="AroundEventCronFinishedSuccess" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
     </type>
 
 </config>

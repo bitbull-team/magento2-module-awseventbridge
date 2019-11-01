@@ -108,7 +108,10 @@ class Tracking implements TrackingInterface
         $this->customerSession = $customerSession;
 
         try {
-            $appState->getAreaCode();
+            $areaCode = $appState->getAreaCode();
+            if ($areaCode === 'crontab') {
+                $this->isInConsole = true;
+            }
         } catch (LocalizedException $e) {
             $this->isInConsole = true;
         }

@@ -25,4 +25,15 @@
         <observer name="awseventbridge_cache_flush_static_files" instance="Bitbull\AWSEventBridge\Observer\Cache\FlushStaticFiles" />
     </event>
 
+    <!-- Cron -->
+    <event name="cron_job_start">
+        <observer name="awseventbridge_cron_job_start" instance="Bitbull\AWSEventBridge\Observer\Cron\Started" />
+    </event>
+    <event name="cron_job_error">
+        <observer name="awseventbridge_cron_job_error" instance="Bitbull\AWSEventBridge\Observer\Cron\FinishedError" />
+    </event>
+    <event name="cron_job_success">
+        <observer name="awseventbridge_cron_job_success" instance="Bitbull\AWSEventBridge\Observer\Cron\FinishedSuccess" />
+    </event>
+
 </config>
