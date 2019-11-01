@@ -4,7 +4,7 @@ namespace Bitbull\AWSEventBridge\Model\Handler\Events;
 
 use Bitbull\AWSEventBridge\Model\Service\EventEmitter;
 
-abstract class SendEventAsync extends EventEmitter
+class SendEventAsync extends EventEmitter
 {
     /**
      * Process queue message

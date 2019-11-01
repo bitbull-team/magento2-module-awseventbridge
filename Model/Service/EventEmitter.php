@@ -156,7 +156,6 @@ class EventEmitter implements EventEmitterInterface
             $this->logger->error("No queue publisher set, 'addEventToQueue' method cannot work");
             return;
         }
-        $this->logger->debug("Publish event '$eventName' to topic '". self::TOPIC_NAME ."' with data: ".print_r($eventData, true));
         try {
             $this->publisher->publish(self::TOPIC_NAME, [
                 $this->serializerJson->serialize([
@@ -168,7 +167,7 @@ class EventEmitter implements EventEmitterInterface
             $this->logger->logException($exception);
             return;
         }
-        $this->logger->debug("Event '$eventName' added to queue");
+        $this->logger->debug("Event '$eventName' published to topic '". self::TOPIC_NAME ."' with data: ".print_r($eventData, true));
     }
 
     /**

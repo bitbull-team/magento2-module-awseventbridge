@@ -84,13 +84,10 @@ Edit module options:
 
 ![Options](./doc/imgs/config-options.png?raw=true)
 
-- Set the correct region where you want to receive events, for example "eu-west-1".
-- Set event source name with a value that can be filtered (`events:source`) when you connect to these events.
-- Set event bus name, leave empty to use your account default.
-- Enable tracking to add `tracking` property to data object.
-- Enable debug mode if you want a more verbose logging in `var/log/aws-eventbridge.log` log file.
-- Enable CloudWatch Events fallback to use this service instead of EventBridge (for backward compatibility).
-- Enable dry run mode to activate the module actions and integrations without actually sending events data.
+If you enable the "Queue mode" you also need to start the queue consumer in order to process events queue:
+```bash
+bin/magento queue:consumers:start awsEventBridgeConsumer
+``` 
 
 ![Events](./doc/imgs/config-cart-events.png?raw=true)
 
