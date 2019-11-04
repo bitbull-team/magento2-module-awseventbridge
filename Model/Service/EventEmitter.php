@@ -176,7 +176,7 @@ class EventEmitter implements EventEmitterInterface
      * @param $eventName
      * @param $eventData
      */
-    protected function sendImmediately($eventName, $eventData)
+    public function sendImmediately($eventName, $eventData)
     {
         // Check if tracking is enabled, in case add client infos
         if ($this->trackingEnabled === true) {
