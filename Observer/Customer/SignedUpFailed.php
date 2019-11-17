@@ -40,15 +40,18 @@ class SignedUpFailed extends BaseObserver
         $postData = $observer->getRequest()->getPost();
         $errorMessages = $this->messageManager->getMessages()->getErrors();
 
-        if (count($errorMessages) > 0) {
-            $this->eventEmitter->send($this->getFullEventName(), [
-                'messages' => array_map(function($errorMessage) {
-                    return $errorMessage->getText();
-                }, $errorMessages),
-                'firstname' => $postData['firstname'] ?? null,
-                'lastname' => $postData['lastname'] ?? null,
-                'email' => $postData['email'] ?? null,
-            ]);
+        if (count($errorMessages) === 0) {
+            $this->logger->warn('No errors found, skipping ' . $this->getEventName());
+            return;
         }
+
+        $this->eventEmitter->send($this->getFullEventName(), [
+            'messages' => array_map(function($errorMessage) {
+                return $errorMessage->getText();
+            }, $errorMessages),
+            'firstname' => $postData['firstname'] ?? null,
+            'lastname' => $postData['lastname'] ?? null,
+            'email' => $postData['email'] ?? null,
+        ]);
     }
 }

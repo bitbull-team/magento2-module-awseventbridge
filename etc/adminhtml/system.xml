@@ -123,17 +123,17 @@
                     <comment><![CDATA[A customer user logged out]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="customer_login_failed" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="login_failed" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>CustomerLoginFailed</label>
                     <comment><![CDATA[A customer user failed login]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="customer_signed_up" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="signed_up" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>CustomerSignedUp</label>
                     <comment><![CDATA[A customer user sign up]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="customer_signed_up_failed" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="signed_up_failed" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>CustomerSignedUpFailed</label>
                     <comment><![CDATA[A customer user failed sign up]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -147,15 +147,84 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
-            <group id="events_order" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="events_order" translate="label" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Order events</label>
                 <field id="placed" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>OrderPlaced</label>
                     <comment><![CDATA[A customer place a new order]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="saved" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>OrderCreated / OrderUpdated</label>
+                    <comment><![CDATA[An order was saved.]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="canceled" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>OrderCanceled</label>
+                    <comment><![CDATA[An order was canceled.]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="deleted" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>OrderDeleted</label>
+                    <comment><![CDATA[An order was deleted.]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
             </group>
-            <group id="events_cache" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="events_invoice" translate="label" type="text" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Invoice events</label>
+                <field id="saved" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>InvoiceCreated / InvoiceUpdated</label>
+                    <comment><![CDATA[An invoice was saved.]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="payed" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>InvoicePayed</label>
+                    <comment><![CDATA[An invoice was payed.]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="registered" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>InvoiceRegistered</label>
+                    <comment><![CDATA[An invoice was registered.]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="deleted" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>OrderDeleted</label>
+                    <comment><![CDATA[An invoice was deleted.]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="events_creditmemo" translate="label" type="text" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Credit Memo events</label>
+                <field id="saved" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CreditmemoCreated / CreditmemoUpdated</label>
+                    <comment><![CDATA[A credit memo was saved.]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="refunded" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CreditmemoRefunded</label>
+                    <comment><![CDATA[A credit memo was refunded.]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="deleted" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CreditmemoDeleted</label>
+                    <comment><![CDATA[A credit memo was deleted.]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="events_shipment" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Shipment events</label>
+                <field id="saved" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>ShipmentCreated / ShipmentUpdated</label>
+                    <comment><![CDATA[A shipment was saved.]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="deleted" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>ShipmentDeleted</label>
+                    <comment><![CDATA[A shipment was deleted.]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="events_cache" translate="label" type="text" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Cache events</label>
                 <field id="flush_all" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>CacheFlushAll</label>
@@ -183,7 +252,7 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
-            <group id="events_cron" translate="label" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="events_cron" translate="label" type="text" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Cron events</label>
                 <field id="started" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>CronStarted</label>

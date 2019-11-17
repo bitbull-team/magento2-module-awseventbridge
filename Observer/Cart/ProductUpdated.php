@@ -1,7 +1,6 @@
 <?php
 namespace Bitbull\AWSEventBridge\Observer\Cart;
 
-use Bitbull\AWSEventBridge\Observer\BaseObserver;
 use Magento\Framework\Event\Observer;
 
 class ProductUpdated extends BaseObserver
@@ -12,6 +11,7 @@ class ProductUpdated extends BaseObserver
      */
     public function execute(Observer $observer)
     {
+        /** @var \Magento\Quote\Model\Quote\Item[] $items */
         $items = $observer->getCart()->getQuote()->getItems();
         $info = $observer->getInfo()->getData();
 

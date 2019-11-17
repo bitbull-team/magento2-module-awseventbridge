@@ -104,6 +104,51 @@
     <type name="Bitbull\AWSEventBridge\Observer\Order\Placed">
         <plugin name="AroundEventOrderPlaced" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
     </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Order\Saved">
+        <plugin name="AroundEventOrderSaved" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Order\Canceled">
+        <plugin name="AroundEventOrderCanceled" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Order\Deleted">
+        <plugin name="AroundEventOrderDeleted" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+
+    <!-- Observers invoice -->
+
+    <type name="Bitbull\AWSEventBridge\Observer\Invoice\Saved">
+        <plugin name="AroundEventInvoiceSaved" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Invoice\Registered">
+        <plugin name="AroundEventInvoiceRegistered" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Invoice\Payed">
+        <plugin name="AroundEventInvoicePayed" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Invoice\Deleted">
+        <plugin name="AroundEventInvoiceDeleted" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+
+    <!-- Observers creditmemo -->
+
+    <type name="Bitbull\AWSEventBridge\Observer\Creditmemo\Saved">
+        <plugin name="AroundEventInvoiceDeleted" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Creditmemo\Refunded">
+        <plugin name="AroundEventInvoiceDeleted" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Creditmemo\Deleted">
+        <plugin name="AroundEventInvoiceDeleted" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+
+    <!-- Observers shipment -->
+
+    <type name="Bitbull\AWSEventBridge\Observer\Shipment\Saved">
+        <plugin name="AroundEventInvoiceDeleted" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Bitbull\AWSEventBridge\Observer\Shipment\Deleted">
+        <plugin name="AroundEventInvoiceDeleted" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag" sortOrder="1" disabled="false"/>
+    </type>
 
     <!-- Observers cache -->
 

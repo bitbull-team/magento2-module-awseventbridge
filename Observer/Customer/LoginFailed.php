@@ -40,13 +40,16 @@ class LoginFailed extends BaseObserver
         $postData = $observer->getRequest()->getPost();
         $errorMessages = $this->messageManager->getMessages()->getErrors();
 
-        if (count($errorMessages) > 0) {
-            $this->eventEmitter->send($this->getFullEventName(), [
-                'messages' => array_map(function($errorMessage) {
-                    return $errorMessage->getText();
-                }, $errorMessages),
-                'username' => isset($postData['login']) ? $postData['login']['username'] : null
-            ]);
+        if (count($errorMessages) === 0) {
+            $this->logger->warn('No errors found, skipping ' . $this->getEventName());
+            return;
         }
+
+        $this->eventEmitter->send($this->getFullEventName(), [
+            'messages' => array_map(function($errorMessage) {
+                return $errorMessage->getText();
+            }, $errorMessages),
+            'username' => isset($postData['login']) ? $postData['login']['username'] : null
+        ]);
     }
 }
