@@ -174,65 +174,110 @@ Here a list of supported events that can be enabled:
 #### Cart events
 
 `CartProductAdded`
-A product is added to cart by a customer
+A product is added to cart by a customer.
 
 `CartProductUpdated`
-A cart is updated by a customer
+A cart is updated by a customer.
 
 `CartProductRemoved`
-A product is removed from cart by a customer
+A product is removed from cart by a customer.
 
 #### Admin user events
 
 `UserLoggedIn`
-An admin user logged in
+An admin user logged in.
 
 `UserLoggedOut`
-An admin user logged out
+An admin user logged out.
 
 `UserLoginFailed`
-An admin user failed login
+An admin user failed login.
 
 #### Customers events
 
 `CustomerLoggedIn`
-A customer user logged in
+A customer user logged in.
 
 `CustomerLoggedOut`
-A customer user logged out
+A customer user logged out.
 
 `CustomerLoginFailed`
-A customer user failed login
+A customer user failed login.
 
 `CustomerSignedUp`
-A customer user sign up
+A customer user sign up.
 
 `CustomerSignedUpFailed`
-A customer user failed sign up
+A customer user failed sign up.
 
 #### Newsletter events
 
 `NewsletterSubscriptionChanged`
-A customer user change newsletter subscription preference
+A customer user change newsletter subscription preference.
 
 #### Order events
 
 `OrderPlaced`
-A customer place a new order
+A customer place a new order.
+
+`OrderPlaced`
+A customer place a new order.
+
+`OrderCreated` / `OrderUpdated`
+An order was saved.
+
+`OrderCanceled`
+An order was canceled.
+
+`OrderDeleted`
+An order was deleted.
+
+#### Invoice events
+
+`InvoiceCreated` / `InvoiceUpdated`
+An invoice was saved.
+
+`InvoicePayed`
+An invoice was payed.
+
+`InvoiceRegistered`
+An invoice was registered.
+
+`OrderDeleted`
+An invoice was deleted.
+
+#### Credit Memo events
+
+`CreditmemoCreated` / `CreditmemoUpdated`
+A credit memo was saved.
+
+`CreditmemoRefunded`
+A credit memo was refunded.
+
+`CreditmemoDeleted`
+A credit memo was deleted.
+
+#### Shipment events
+
+`ShipmentCreated` / `ShipmentUpdated`
+A shipment was saved.
+
+`ShipmentDeleted`
+A shipment was deleted.
 
 #### Cache events
 
 `CacheFlushAll`
-An admin user flush the cache
+An admin user flush the cache.
 
 `CacheFlushSystem`
-An admin user flush system cache
+An admin user flush system cache.
 
 `CacheFlushCatalogImages`
-An admin user flush catalog images cache
+An admin user flush catalog images cache.
 
 `CacheFlushMedia`
-An admin user flush media cache
+An admin user flush media cache.
 
 `CacheFlushStaticFiles`
-An admin user flush static files cache
+An admin user flush static files cache.
