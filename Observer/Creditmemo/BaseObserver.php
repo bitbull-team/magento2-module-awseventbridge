@@ -8,6 +8,7 @@ use Bitbull\AWSEventBridge\Model\Service\EventEmitter;
 use Bitbull\AWSEventBridge\Observer\BaseObserver as ParentBaseObserver;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\Event\Observer;
+use Magento\Sales\Model\Order\Creditmemo;
 
 abstract class BaseObserver extends ParentBaseObserver
 {
@@ -31,12 +32,26 @@ abstract class BaseObserver extends ParentBaseObserver
      */
     public function getCreditmemoData($creditMemo)
     {
+        switch ($creditMemo->getCreditmemoStatus()) {
+            case Creditmemo::STATE_OPEN:
+                $status = 'OPEN';
+                break;
+            case Creditmemo::STATE_REFUNDED:
+                $status = 'REFUNDED';
+                break;
+            case Creditmemo::STATE_CANCELED:
+                $status = 'CANCELED';
+                break;
+            default:
+                $status = (string) $creditMemo->getStatus();
+        }
+
         return [
             'id' => $creditMemo->getIncrementId(),
-            'shipping' => $creditMemo->getShippingAmount(),
-            'tax' => $creditMemo->getTaxAmount(),
+            'shippingAmount' => $creditMemo->getShippingAmount(),
+            'taxAmount' => $creditMemo->getTaxAmount(),
             'total' => $creditMemo->getGrandTotal(),
-            'status' => $creditMemo->getCreditmemoStatus(),
+            'status' => $status,
             'items' => array_map(function ($item) {
                 /** @var \Magento\Sales\Api\Data\CreditmemoItemInterface $item */
                 return [

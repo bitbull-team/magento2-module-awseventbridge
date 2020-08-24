@@ -6,6 +6,7 @@ use Bitbull\AWSEventBridge\Observer\BaseObserver as ParentBaseObserver;
 use Magento\Framework\Event\Observer;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order\Address;
+use Magento\Sales\Model\Order\Invoice;
 
 abstract class BaseObserver extends ParentBaseObserver
 {
@@ -40,8 +41,23 @@ abstract class BaseObserver extends ParentBaseObserver
         /** @var OrderInterface $order */
         $order = $invoice->getOrder();
 
+        switch ($invoice->getState()) {
+            case Invoice::STATE_OPEN:
+                $status = 'OPEN';
+                break;
+            case Invoice::STATE_PAID:
+                $status = 'PAID';
+                break;
+            case Invoice::STATE_CANCELED:
+                $status = 'CANCELED';
+                break;
+            default:
+                $status = (string) $invoice->getState();
+        }
+
         return [
             'orderId' => $order->getIncrementId(),
+            'status' => $status,
             'billingAddress' => $this->getAddressData($billingAddress),
             'shippingAmount' => $invoice->getShippingAmount(),
             'taxAmount' => $invoice->getTaxAmount(),

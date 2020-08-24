@@ -464,6 +464,7 @@ An invoice was created or updated.
 ```json
 {
   "orderId": "000000001",
+  "status": "PAID",
   "billingAddress":{
     "countryId": "IT",
     "region": null,
