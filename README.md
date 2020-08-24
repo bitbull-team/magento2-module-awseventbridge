@@ -1,10 +1,10 @@
 ## Magento 2 module AWS EventBridge integration
 
-Send Magento's events to [Amazon EventBridge](https://aws.amazon.com/eventbridge/) service to be able to integrate Magento with many different AWS serverless services. 
+Send Magento events to [Amazon EventBridge](https://aws.amazon.com/eventbridge/) service to be able to integrate Magento with many different AWS serverless services. 
 
 ![Packagist](https://img.shields.io/packagist/v/bitbull/magento2-module-awseventbridge)
 
-![Magento](https://img.shields.io/badge/magento-~2.2.7-orange)
+![Magento](https://img.shields.io/badge/magento-~2.3.4-orange)
 
 ![PHP](https://img.shields.io/packagist/php-v/bitbull/magento2-module-awseventbridge)
 
@@ -94,11 +94,63 @@ Edit module options:
 
 ![Events](./doc/imgs/config-cart-events.png?raw=true)
 
-These sections contain a list of supported events that can be activated and used to trigger Lambda functions.
+These sections contain a list of supported events that can be activated and used to trigger Lambda functions, send event to an SNS topic, add message to SQS Queue, execute a StepFunction and so on..
 
 ## Events 
 
 This module inject observers to listen to Magento 2 events, elaborate the payload and then send the event to AWS services.
+
+### Create an AWS EventBridge Rule
+
+In order to connect to an EventBridge event and trigger a target you need to create an EventBridge Rule that match one or more events.
+
+The event name is used in `detail-type` section of event data, so if you want to match "CartProductAdded" event you need to create a rule like this:
+```json
+{
+  "source": [
+    "example.com"
+  ],
+  "detail-type": [
+    "CartProductAdded"
+  ]
+}
+```
+remember to also match `source` name to avoid collision with different Magento environment.
+
+You can also match multiple event names, for example if you want to react to all cart events:
+```json
+{
+  "source": [
+    "example.com"
+  ],
+  "detail-type": [
+    "CartProductAdded",
+    "CartProductUpdated",
+    "CartProductRemoved"
+  ]
+}
+```
+
+Is it possible to use a more specific matching rule in order to match, for example, all cart events related to a specific product sku:
+```json
+{
+  "source": [
+    "example.com"
+  ],
+  "detail-type": [
+    "CartProductAdded",
+    "CartProductUpdated",
+    "CartProductRemoved"
+  ],
+  "detail": {
+    "sku": [
+      "WJ12-S-Blue"
+    ]
+  }
+}
+```
+read more about content-based filtering with Event Patterns at:
+- https://docs.aws.amazon.com/eventbridge/latest/userguide/content-filtering-with-event-patterns.html
 
 ### Data specification
 
@@ -107,64 +159,66 @@ Event will be pass data into `Details` event property:
 (
     [sku] => WJ12-S-Blue
     [qty] => 1
-    [tracking] => Array
-        (
-            [transport] => HTTP
-            [hostname] => f3a501ad4988
-            [time] => 1566821650383
-        )
 )
 ```
 
 Additionally (activating tracking option in backend options) every event will be enriched with `tracking` property that contain infos about client, session and framework, for example:
 ```php
-[tracking] => Array
-    (
-        [transport] => HTTP
-        [hostname] => f3a501ad4988
-        [time] => 1566594699836
-        [storeId] => 1
-        [version] => Array
-            (
-                [module] => dev-master
-                [php] => 7.1.27-1+ubuntu16.04.1+deb.sury.org+1
-                [magento] => 2.2.7
-            )
-        [user] => Array
-            (
-                [id] => 3
-                [username] => fabio.gollinucci
-                [email] => fabio.gollinucci@bitbull.it
-            )
-        [ip] => 172.17.0.1
-        [userAgent] => Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0
-    )
+(
+    [sku] => WJ12-S-Blue
+    [qty] => 1
+    [tracking] => Array
+        (
+            [transport] => HTTP
+            [hostname] => f3a501ad4988
+            [time] => 1566594699836
+            [storeId] => 1
+            [version] => Array
+                (
+                    [module] => dev-master
+                    [php] => 7.1.27-1+ubuntu16.04.1+deb.sury.org+1
+                    [magento] => 2.2.7
+                )
+            [user] => Array
+                (
+                    [id] => 3
+                    [username] => fabio.gollinucci
+                    [email] => fabio.gollinucci@bitbull.it
+                )
+            [ip] => 172.17.0.1
+            [userAgent] => Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0
+        )
+)
 ```
 when using Magento CLI `user` is based on the system user that execute the command:
 ```php
-[tracking] => Array
-    (
-        [transport] => SHELL
-        [hostname] => f3a501ad4988
-        [time] => 1566821355758
-        [storeId] => 1
-        [version] => Array
-            (
-                [module] => dev-master
-                [php] => 7.1.27-1+ubuntu16.04.1+deb.sury.org+1
-                [magento] => 2.2.7
-            )
-        [user] => Array
-            (
-                [name] => www-data
-                [passwd] => x
-                [uid] => 1000
-                [gid] => 33
-                [gecos] => www-data
-                [dir] => /var/www
-                [shell] => /usr/sbin/nologin
-            )
-    )
+(
+    [sku] => WJ12-S-Blue
+    [qty] => 1
+    [tracking] => Array
+        (
+            [transport] => SHELL
+            [hostname] => f3a501ad4988
+            [time] => 1566821355758
+            [storeId] => 1
+            [version] => Array
+                (
+                    [module] => dev-master
+                    [php] => 7.1.27-1+ubuntu16.04.1+deb.sury.org+1
+                    [magento] => 2.2.7
+                )
+            [user] => Array
+                (
+                    [name] => www-data
+                    [passwd] => x
+                    [uid] => 1000
+                    [gid] => 33
+                    [gecos] => www-data
+                    [dir] => /var/www
+                    [shell] => /usr/sbin/nologin
+                )
+        )
+)
 ``` 
 
 ### Supported Events
