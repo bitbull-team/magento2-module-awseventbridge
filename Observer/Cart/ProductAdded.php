@@ -1,7 +1,6 @@
 <?php
 namespace Bitbull\AWSEventBridge\Observer\Cart;
 
-use Bitbull\AWSEventBridge\Observer\BaseObserver;
 use Magento\Framework\Event\Observer;
 
 class ProductAdded extends BaseObserver

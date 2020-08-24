@@ -1,10 +1,55 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
 
-    <!-- Checkout -->
+    <!-- Order -->
 
     <event name="sales_order_place_after">
         <observer name="awseventbridge_order_placed" instance="Bitbull\AWSEventBridge\Observer\Order\Placed"/>
+    </event>
+    <event name="sales_order_save_after">
+        <observer name="awseventbridge_order_saved" instance="Bitbull\AWSEventBridge\Observer\Order\Saved"/>
+    </event>
+    <event name="order_cancel_after">
+        <observer name="awseventbridge_order_canceled" instance="Bitbull\AWSEventBridge\Observer\Order\Canceled"/>
+    </event>
+    <event name="sales_order_delete_after">
+        <observer name="awseventbridge_order_deleted" instance="Bitbull\AWSEventBridge\Observer\Order\Deleted"/>
+    </event>
+
+    <!-- Invoice -->
+
+    <event name="sales_order_invoice_save_after">
+        <observer name="awseventbridge_invoice_saved" instance="Bitbull\AWSEventBridge\Observer\Invoice\Saved"/>
+    </event>
+    <event name="sales_order_invoice_register">
+        <observer name="awseventbridge_invoice_registered" instance="Bitbull\AWSEventBridge\Observer\Invoice\Registered"/>
+    </event>
+    <event name="sales_order_invoice_pay">
+        <observer name="awseventbridge_invoice_payed" instance="Bitbull\AWSEventBridge\Observer\Invoice\Payed"/>
+    </event>
+    <event name="sales_order_invoice_delete_after">
+        <observer name="awseventbridge_invoice_deleted" instance="Bitbull\AWSEventBridge\Observer\Invoice\Deleted"/>
+    </event>
+
+    <!-- Creditmemo -->
+
+    <event name="sales_order_creditmemo_save_after">
+        <observer name="awseventbridge_creditmemo_saved" instance="Bitbull\AWSEventBridge\Observer\Creditmemo\Saved"/>
+    </event>
+    <event name="sales_order_creditmemo_refund">
+        <observer name="awseventbridge_creditmemo_refunded" instance="Bitbull\AWSEventBridge\Observer\Creditmemo\Refunded"/>
+    </event>
+    <event name="sales_order_creditmemo_delete_after">
+        <observer name="awseventbridge_creditmemo_deleted" instance="Bitbull\AWSEventBridge\Observer\Creditmemo\Deleted"/>
+    </event>
+
+    <!-- Shipment -->
+
+    <event name="sales_order_shipment_save_after">
+        <observer name="awseventbridge_shipment_saved" instance="Bitbull\AWSEventBridge\Observer\Shipment\Saved"/>
+    </event>
+    <event name="sales_order_shipment_delete_after">
+        <observer name="awseventbridge_shipment_deleted" instance="Bitbull\AWSEventBridge\Observer\Shipment\Deleted"/>
     </event>
 
     <!-- Cache -->
