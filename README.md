@@ -230,49 +230,173 @@ Here a list of supported events that can be enabled:
 `CartProductAdded`
 A product is added to cart by a customer.
 
+```json
+{
+    "sku" => "abc-123",
+    "qty" => 1
+}
+```
+
 `CartProductUpdated`
 A cart is updated by a customer.
 
+```json
+{
+    "sku" => "abc-123",
+    "operation" => "add",
+    "value" => 1,
+    "qty" => [
+        "from" => 1,
+        "to" => 2
+    ]
+}
+```
+```json
+{
+    "sku" => "abc-123",
+    "operation" => "remove",
+    "value" => 1,
+    "qty" => [
+        "from" => 2,
+        "to" => 1
+    ]
+}
+```
+
 `CartProductRemoved`
 A product is removed from cart by a customer.
+
+```json
+{
+    "sku" => "abc-123",
+    "qty" => 2
+}
+```
 
 #### Admin user events
 
 `UserLoggedIn`
 An admin user logged in.
 
+```json
+{
+    "id" => 1,
+    "username" => "admin",
+    "email" => "admin@example.com"
+}
+```
+
 `UserLoggedOut`
 An admin user logged out.
 
+```json
+{
+    "id" => 1,
+    "username" => "admin",
+    "email" => "admin@example.com"
+}
+```
+
 `UserLoginFailed`
 An admin user failed login.
+
+```json
+{
+    "username" => "admin"
+}
+```
 
 #### Customers events
 
 `CustomerLoggedIn`
 A customer user logged in.
 
+```json
+{
+    "id" => 1,
+    "email" => "test@example.com"
+}
+```
+
 `CustomerLoggedOut`
 A customer user logged out.
+
+```json
+{
+    "id" => 1,
+    "email" => "test@example.com"
+}
+```
 
 `CustomerLoginFailed`
 A customer user failed login.
 
+```json
+{
+    "username" => "test@example.com"
+    "messages" [
+        "The account sign-in was incorrect or your account is disabled temporarily. Please wait and try again later."
+    ]
+}
+```
+
 `CustomerSignedUp`
 A customer user sign up.
 
+```json
+{
+    "defaultBilling": "",
+    "defaultShipping": "",
+    "createdAt": "2020-08-24 00:00:00",
+    "email": "test@example.com",
+    "firstname": "Test",
+    "gender": "",
+    "id": 3,
+    "lastname": "Test",
+    "middlename": "",
+    "prefix": "",
+    "suffix": "",
+    "addresses": []
+}
+```
+
 `CustomerSignedUpFailed`
 A customer user failed sign up.
+
+```json
+{
+    "email": "test@example.com",
+    "firstname": "Test",
+    "lastname": "Test",
+    "messages": [
+        "customerAlreadyExistsErrorMessage"
+    ]
+}
+```
 
 #### Newsletter events
 
 `NewsletterSubscriptionChanged`
 A customer user change newsletter subscription preference.
 
-#### Order events
+```json
+{
+    "customerId": 1,
+    "email": "test@example.com",
+    "isSubscribed": true,
+    "status": "SUBSCRIBED"
+}
+```
+```json
+{
+    "customerId": 1,
+    "email": "test@example.com",
+    "isSubscribed": false,
+    "status": "UNSUBSCRIBED"
+}
+```
 
-`OrderPlaced`
-A customer place a new order.
+#### Order events
 
 `OrderPlaced`
 A customer place a new order.
