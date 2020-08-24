@@ -4,6 +4,8 @@ namespace Bitbull\AWSEventBridge\Observer\Order;
 
 use Bitbull\AWSEventBridge\Observer\BaseObserver as ParentBaseObserver;
 use Magento\Framework\Event\Observer;
+use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Model\Order\Address;
 
 abstract class BaseObserver extends ParentBaseObserver
 {
@@ -13,7 +15,7 @@ abstract class BaseObserver extends ParentBaseObserver
      */
     public function execute(Observer $observer)
     {
-        /** @var \Magento\Sales\Api\Data\OrderInterface $order */
+        /** @var OrderInterface $order */
         $order = $observer->getEvent()->getOrder();
 
         $this->eventEmitter->send($this->getFullEventName(), $this->getOrderData($order));
@@ -23,18 +25,30 @@ abstract class BaseObserver extends ParentBaseObserver
      * Get order data
      *
      * @return array
-     * @var \Magento\Sales\Api\Data\OrderInterface $order
+     * @var OrderInterface $order
      */
     public function getOrderData($order)
     {
+        /** @var Address $shippingAddress */
+        $shippingAddress = $order->getShippingAddress();
+        /** @var Address $billingAddress */
+        $billingAddress = $order->getBillingAddress();
+
+        $items = $order->getItems();
+        if (is_object($items)) {
+            $items = $items->getItems();
+        }
+
         return [
             'id' => $order->getIncrementId(),
             'status' => $order->getStatus(),
-            'shipping' => $order->getShippingAmount(),
             'coupon' => $order->getCouponCode(),
-            'tax' => $order->getTaxAmount(),
+            'billingAddress' => $this->getAddressData($billingAddress),
+            'shippingAddress' => $this->getAddressData($shippingAddress),
+            'shippingAmount' => $order->getShippingAmount(),
+            'taxAmount' => $order->getTaxAmount(),
             'total' => $order->getGrandTotal(),
-            'items' => array_map(function ($item) {
+            'items' => array_map(static function ($item) {
 
                 /** @var \Magento\Sales\Api\Data\OrderItemInterface $item */
                 return [
@@ -43,7 +57,24 @@ abstract class BaseObserver extends ParentBaseObserver
                     'price' => $item->getPrice(),
                     'qty' => $item->getQtyOrdered(),
                 ];
-            }, $order->getItems())
+            }, $items)
+        ];
+    }
+
+    /**
+     * Get address data
+     *
+     * @return array
+     * @var Address $address
+     */
+    public function getAddressData($address)
+    {
+        return [
+          'countryId' => $address->getCountryId(),
+          'region' => $address->getRegion(),
+          'street' => $address->getStreet(),
+          'city' => $address->getCity(),
+          'postCode' => $address->getPostcode(),
         ];
     }
 }

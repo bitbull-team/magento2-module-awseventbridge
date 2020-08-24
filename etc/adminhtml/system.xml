@@ -198,8 +198,8 @@
                    showInStore="1">
                 <label>Invoice events</label>
                 <field id="saved" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>InvoiceCreated / InvoiceUpdated</label>
-                    <comment><![CDATA[An invoice was saved.]]></comment>
+                    <label>InvoiceSaved</label>
+                    <comment><![CDATA[An invoice was created or updated.]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="payed" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -213,7 +213,7 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="deleted" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>OrderDeleted</label>
+                    <label>InvoiceDeleted</label>
                     <comment><![CDATA[An invoice was deleted.]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
@@ -222,8 +222,8 @@
                    showInWebsite="1" showInStore="1">
                 <label>Credit Memo events</label>
                 <field id="saved" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>CreditmemoCreated / CreditmemoUpdated</label>
-                    <comment><![CDATA[A credit memo was saved.]]></comment>
+                    <label>CreditmemoSaved</label>
+                    <comment><![CDATA[A credit memo was created or updated.]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="refunded" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -241,8 +241,8 @@
                    showInStore="1">
                 <label>Shipment events</label>
                 <field id="saved" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>ShipmentCreated / ShipmentUpdated</label>
-                    <comment><![CDATA[A shipment was saved.]]></comment>
+                    <label>ShipmentSaved</label>
+                    <comment><![CDATA[A shipment was created or updated.]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="deleted" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">

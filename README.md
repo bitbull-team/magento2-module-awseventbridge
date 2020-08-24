@@ -412,7 +412,40 @@ A customer user change newsletter subscription preference.
 #### Order events
 
 `OrderPlaced`
-A customer place a new order.
+```json
+{
+  "id": "000000001",
+  "status": "pending",
+  "coupon": null,
+  "billingAddress": {
+    "country": "IT",
+    "region": null,
+    "street": [
+      "via di test"
+    ],
+    "city": "Test",
+    "postCode": "12345"
+  },
+  "shippingAddress": {
+    "country": "IT",
+    "region": null,
+    "street": [
+      "via di test"
+    ],
+    "city": "Test",
+    "postCode": "12345"
+  },
+  "shippingAmount": 5,
+  "taxAmount": 0,
+  "total": 64,
+  "items":[{
+    "sku": "24-MB02",
+    "name": "Fusion Backpack",
+    "price": 59,
+    "qty": 1
+  }]
+}
+```
 
 `OrderCreated` / `OrderUpdated`
 An order was saved.
@@ -425,8 +458,32 @@ An order was deleted.
 
 #### Invoice events
 
-`InvoiceCreated` / `InvoiceUpdated`
-An invoice was saved.
+`InvoiceSaved`
+An invoice was created or updated.
+
+```json
+{
+  "orderId": "000000001",
+  "billingAddress":{
+    "countryId": "IT",
+    "region": null,
+    "street": [
+      "via di test"
+    ],
+    "city": "Test",
+    "postCode": "12345"
+  },
+  "shippingAmount": "10.0000",
+  "taxAmount": 0,
+  "total": 77,
+  "items": [{
+      "sku": "WS12-M-Purple",
+      "name": "Radiant Tee",
+      "price": "22.0000",
+      "qty": 1
+  }]
+}
+```
 
 `InvoicePayed`
 An invoice was payed.
@@ -450,8 +507,30 @@ A credit memo was deleted.
 
 #### Shipment events
 
-`ShipmentCreated` / `ShipmentUpdated`
+`ShipmentSaved`
 A shipment was saved.
+
+```json
+{
+  "id": "000000016",
+  "tracks": [{
+    "title": "DHL",
+    "carrier": "dhl",
+    "number": "123346457" 
+   }],
+  "comments": [
+    "this is a comment"
+  ],
+  "qty": 1,
+  "weight": null,
+  "items": [{
+    "sku": "MT07-M-Gray",
+    "name": "Argus All-Weather Tank",
+    "price": "22.0000",
+    "qty": 1
+  }]
+}
+```
 
 `ShipmentDeleted`
 A shipment was deleted.

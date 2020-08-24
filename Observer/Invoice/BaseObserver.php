@@ -4,6 +4,8 @@ namespace Bitbull\AWSEventBridge\Observer\Invoice;
 
 use Bitbull\AWSEventBridge\Observer\BaseObserver as ParentBaseObserver;
 use Magento\Framework\Event\Observer;
+use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Model\Order\Address;
 
 abstract class BaseObserver extends ParentBaseObserver
 {
@@ -27,21 +29,50 @@ abstract class BaseObserver extends ParentBaseObserver
      */
     public function getInvoiceData($invoice)
     {
+        /** @var Address $billingAddress */
+        $billingAddress = $invoice->getBillingAddress();
+
+        $items = $invoice->getItems();
+        if (is_object($items)) {
+            $items = $items->getItems();
+        }
+
+        /** @var OrderInterface $order */
+        $order = $invoice->getOrder();
+
         return [
-            'id' => $invoice->getIncrementId(),
-            'orderId' => $invoice->getOrderId(),
-            'shipping' => $invoice->getShippingAmount(),
-            'tax' => $invoice->getTaxAmount(),
+            'orderId' => $order->getIncrementId(),
+            'billingAddress' => $this->getAddressData($billingAddress),
+            'shippingAmount' => $invoice->getShippingAmount(),
+            'taxAmount' => $invoice->getTaxAmount(),
             'total' => $invoice->getGrandTotal(),
-            'items' => array_map(function ($item) {
+            'items' => array_map(static function ($item) {
+
                 /** @var \Magento\Sales\Api\Data\InvoiceItemInterface $item */
                 return [
                     'sku' => $item->getSku(),
                     'name' => $item->getName(),
                     'price' => $item->getPrice(),
-                    'quantity' => $item->getQty(),
+                    'qty' => $item->getQty(),
                 ];
-            }, $invoice->getItems())
+            }, $items)
+        ];
+    }
+
+    /**
+     * Get address data
+     *
+     * @return array
+     * @var Address $address
+     */
+    public function getAddressData($address)
+    {
+        return [
+            'countryId' => $address->getCountryId(),
+            'region' => $address->getRegion(),
+            'street' => $address->getStreet(),
+            'city' => $address->getCity(),
+            'postCode' => $address->getPostcode(),
         ];
     }
 }

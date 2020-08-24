@@ -4,6 +4,9 @@ namespace Bitbull\AWSEventBridge\Observer\Shipment;
 
 use Bitbull\AWSEventBridge\Observer\BaseObserver as ParentBaseObserver;
 use Magento\Framework\Event\Observer;
+use Magento\Sales\Api\Data\CommentInterface;
+use Magento\Sales\Api\Data\ShipmentItemInterface;
+use Magento\Sales\Api\Data\TrackInterface;
 
 abstract class BaseObserver extends ParentBaseObserver
 {
@@ -15,6 +18,16 @@ abstract class BaseObserver extends ParentBaseObserver
     {
         /** @var \Magento\Sales\Api\Data\ShipmentInterface $shipment */
         $shipment = $observer->getEvent()->getShipment();
+
+        if ($shipment === null) {
+            /** @var \Magento\Sales\Api\Data\ShipmentTrackInterface $track */
+            $track = $observer->getEvent()->getTrack();
+            if ($track === null) {
+                $this->logger->warn('Cannot find shipment or track for event ' . $this->getFullEventName());
+                return;
+            }
+            $shipment = $track->getShipment();
+        }
 
         $this->eventEmitter->send($this->getFullEventName(), $this->getShipmentData($shipment));
     }
@@ -29,19 +42,32 @@ abstract class BaseObserver extends ParentBaseObserver
     {
         return [
             'id' => $shipment->getIncrementId(),
-            'comments' => $shipment->getComments(),
+            'tracks' => array_map(static function ($track) {
+
+                /** @var TrackInterface $track */
+                return [
+                    'title' => $track->getTitle(),
+                    'carrier' => $track->getCarrierCode(),
+                    'number' => $track->getTrackNumber(),
+                ];
+            }, $shipment->getTracks()),
+            'comments' => array_map(static function ($comment) {
+
+                /** @var CommentInterface $comment */
+                return $comment->getComment();
+            }, $shipment->getComments()),
             'qty' => $shipment->getTotalQty(),
             'weight' => $shipment->getTotalWeight(),
-            'items' => array_map(function ($item) {
+            'items' => array_map(static function ($item) {
 
-                /** @var \Magento\Sales\Api\Data\ShipmentItemInterface $item */
+                /** @var ShipmentItemInterface $item */
                 return [
                     'sku' => $item->getSku(),
                     'name' => $item->getName(),
                     'price' => $item->getPrice(),
                     'qty' => $item->getQty()
                 ];
-            }, $shipment->getItems()->getItems()) // not a typo, first getItems return a collection, not an array
+            }, $shipment->getItems())
         ];
     }
 }

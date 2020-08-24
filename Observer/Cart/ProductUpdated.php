@@ -30,7 +30,7 @@ class ProductUpdated extends BaseObserver
 
             if ($qtyDiff > 0) {
                 $event = 'add';
-            } else if ($qtyDiff < 0) {
+            } elseif ($qtyDiff < 0) {
                 $event = 'remove';
             } else {
                 $this->logger->warn('Product "' . $item->getName() . '" has no changes, qty delta is 0, tracking skipped');
