@@ -14,8 +14,7 @@
                 <field id="type" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1"
                        showInStore="1">
                     <label>Authentication type</label>
-                    <source_model>Bitbull\AWSEventBridge\Model\Adminhtml\System\Config\Source\AuthenticationTypes
-                    </source_model>
+                    <source_model>Bitbull\AWSEventBridge\Model\Adminhtml\System\Config\Source\AuthenticationTypes</source_model>
                 </field>
                 <field id="access_key" type="text" sortOrder="1" showInDefault="2" showInWebsite="1" showInStore="1">
                     <label>Access Key</label>
@@ -32,8 +31,7 @@
                 </field>
                 <field id="check_environment_variables" sortOrder="4" showInDefault="1" showInWebsite="1"
                        showInStore="1">
-                    <frontend_model>Bitbull\AWSEventBridge\Block\System\Config\Form\CheckEnvironmentVariables
-                    </frontend_model>
+                    <frontend_model>Bitbull\AWSEventBridge\Block\System\Config\Form\CheckEnvironmentVariables</frontend_model>
                     <depends>
                         <field id="aws_eventbridge/credentials/type">env</field>
                     </depends>

@@ -59,16 +59,13 @@ abstract class BaseObserver extends ParentBaseObserver
         return [
             'id' => $customer->getId(),
             'email' => $customer->getEmail(),
-            'defaultBilling' => $customer->getDefaultBilling(),
-            'defaultShipping' => $customer->getDefaultShipping(),
             'createdAt' => $customer->getCreatedAt(),
             'firstName' => $customer->getFirstname(),
             'gender' => $customer->getGender(),
             'lastName' => $customer->getLastname(),
             'middleName' => $customer->getMiddlename(),
             'prefix' => $customer->getPrefix(),
-            'suffix' => $customer->getSuffix(),
-            'addresses' => $customer->getAddresses(),
+            'suffix' => $customer->getSuffix()
         ];
     }
 }

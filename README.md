@@ -314,7 +314,14 @@ A customer user logged in.
 ```json
 {
     "id": 1,
-    "email": "test@example.com"
+    "createdAt": "2020-08-24 00:00:00",
+    "email": "test@example.com",
+    "firstname": "Test",
+    "gender": "",
+    "lastname": "Test",
+    "middlename": "",
+    "prefix": "",
+    "suffix": ""
 }
 ```
 
@@ -324,7 +331,14 @@ A customer user logged out.
 ```json
 {
     "id": 1,
-    "email": "test@example.com"
+    "createdAt": "2020-08-24 00:00:00",
+    "email": "test@example.com",
+    "firstname": "Test",
+    "gender": "",
+    "lastname": "Test",
+    "middlename": "",
+    "prefix": "",
+    "suffix": ""
 }
 ```
 
@@ -345,18 +359,15 @@ A customer user sign up.
 
 ```json
 {
-    "defaultBilling": "",
-    "defaultShipping": "",
+    "id": 1,
     "createdAt": "2020-08-24 00:00:00",
     "email": "test@example.com",
     "firstname": "Test",
     "gender": "",
-    "id": 3,
     "lastname": "Test",
     "middlename": "",
     "prefix": "",
-    "suffix": "",
-    "addresses": []
+    "suffix": ""
 }
 ```
 
