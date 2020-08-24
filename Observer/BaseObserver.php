@@ -2,10 +2,10 @@
 
 namespace Bitbull\AWSEventBridge\Observer;
 
+use Bitbull\AWSEventBridge\Api\ObserverInterface;
 use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
 use Bitbull\AWSEventBridge\Api\Service\LoggerInterface;
 use Bitbull\AWSEventBridge\Model\Service\EventEmitter;
-use Bitbull\AWSEventBridge\Api\ObserverInterface;
 use Magento\Framework\Event\Observer;
 use ReflectionClass;
 
@@ -55,11 +55,12 @@ abstract class BaseObserver implements ObserverInterface
      *
      * @return ReflectionClass|null
      */
-    private function getReflectionClass() {
+    private function getReflectionClass()
+    {
         if ($this->reflectionClass  !== null) {
             return $this->reflectionClass;
         }
-        try{
+        try {
             $this->reflectionClass =new ReflectionClass($this);
         } catch (\ReflectionException $error) {
             $this->logger->logException($error);
@@ -67,14 +68,15 @@ abstract class BaseObserver implements ObserverInterface
         }
         if ($this->reflectionClass->getShortName() === 'Interceptor') {
             $this->reflectionClass = $this->reflectionClass->getParentClass();
-        };
+        }
         return $this->reflectionClass;
     }
 
     /**
      * @inheritDoc
      */
-    public function getEventName() {
+    public function getEventName()
+    {
         $eventName = null;
         $reflectionClass = $this->getReflectionClass();
         if ($reflectionClass === null) {
@@ -87,7 +89,8 @@ abstract class BaseObserver implements ObserverInterface
     /**
      * @inheritDoc
      */
-    public function getScopeName() {
+    public function getScopeName()
+    {
         $scopeName = null;
         $reflectionClass = $this->getReflectionClass();
         if ($reflectionClass === null) {
@@ -104,7 +107,8 @@ abstract class BaseObserver implements ObserverInterface
     /**
      * @inheritDoc
      */
-    public function getFullEventName() {
+    public function getFullEventName()
+    {
         $eventName = $this->getEventName();
         $scopeName = $this->getScopeName();
 

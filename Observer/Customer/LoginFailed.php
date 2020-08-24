@@ -46,8 +46,12 @@ class LoginFailed extends BaseObserver
         }
 
         $this->eventEmitter->send($this->getFullEventName(), [
-            'messages' => array_map(function($errorMessage) {
-                return $errorMessage->getText();
+            'messages' => array_map(static function ($errorMessage) {
+                $msg = $errorMessage->getText();
+                if ($msg === null || $msg === '') {
+                    return $errorMessage->getIdentifier();
+                }
+                return $msg;
             }, $errorMessages),
             'username' => isset($postData['login']) ? $postData['login']['username'] : null
         ]);

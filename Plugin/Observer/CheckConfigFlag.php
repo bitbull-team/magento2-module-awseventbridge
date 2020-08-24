@@ -1,9 +1,9 @@
 <?php
 namespace Bitbull\AWSEventBridge\Plugin\Observer;
 
+use Bitbull\AWSEventBridge\Api\ObserverInterface;
 use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
 use Bitbull\AWSEventBridge\Api\Service\LoggerInterface;
-use Bitbull\AWSEventBridge\Api\ObserverInterface;
 
 class CheckConfigFlag
 {
@@ -42,7 +42,7 @@ class CheckConfigFlag
         $start = microtime(true);
         $eventName = $subject->getEventName();
         $scopeName = $subject->getScopeName();
-        $identifier = ($scopeName.'/' ?? '') . $eventName;
+        $identifier = ($scopeName . '/' ?? '') . $eventName;
 
         if ($this->config->isEventEnabled($eventName, $scopeName) === false) {
             $this->logger->debug("Event '$identifier' disabled, skipping emitter");
@@ -50,9 +50,9 @@ class CheckConfigFlag
         }
 
         $this->logger->debug("Event '$identifier' captured, executing..");
-        try{
+        try {
             $result = $proceed($observer);
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             $this->logger->logException($exception);
             return null;
         }

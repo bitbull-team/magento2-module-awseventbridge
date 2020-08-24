@@ -17,5 +17,14 @@ class SubscriptionChanged extends BaseObserver
             return;
         }
         $this->eventEmitter->send($this->getFullEventName(), $this->getSubscriberData($subscriber));
+
+
+
+        $this->eventEmitter->send($this->getFullEventName(), [
+            'customerId' => $subscriber->getCustomerId(),
+            'email' => $subscriber->getSubscriberEmail(),
+            'isSubscribed' => (boolean) $subscriber->isSubscribed(),
+            'status' => $status
+        ]);
     }
 }

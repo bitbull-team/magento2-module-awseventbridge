@@ -232,8 +232,8 @@ A product is added to cart by a customer.
 
 ```json
 {
-    "sku" => "abc-123",
-    "qty" => 1
+    "sku": "abc-123",
+    "qty": 1
 }
 ```
 
@@ -242,24 +242,24 @@ A cart is updated by a customer.
 
 ```json
 {
-    "sku" => "abc-123",
-    "operation" => "add",
-    "value" => 1,
-    "qty" => [
-        "from" => 1,
-        "to" => 2
-    ]
+    "sku": "abc-123",
+    "operation": "add",
+    "value": 1,
+    "qty": {
+        "from": 1,
+        "to": 2
+    }
 }
 ```
 ```json
 {
-    "sku" => "abc-123",
-    "operation" => "remove",
-    "value" => 1,
-    "qty" => [
-        "from" => 2,
-        "to" => 1
-    ]
+    "sku": "abc-123",
+    "operation": "remove",
+    "value": 1,
+    "qty": {
+        "from": 2,
+        "to": 1
+    }
 }
 ```
 
@@ -268,8 +268,8 @@ A product is removed from cart by a customer.
 
 ```json
 {
-    "sku" => "abc-123",
-    "qty" => 2
+    "sku": "abc-123",
+    "qty": 2
 }
 ```
 
@@ -280,9 +280,9 @@ An admin user logged in.
 
 ```json
 {
-    "id" => 1,
-    "username" => "admin",
-    "email" => "admin@example.com"
+    "id": 1,
+    "username": "admin",
+    "email": "admin@example.com"
 }
 ```
 
@@ -291,9 +291,9 @@ An admin user logged out.
 
 ```json
 {
-    "id" => 1,
-    "username" => "admin",
-    "email" => "admin@example.com"
+    "id": 1,
+    "username": "admin",
+    "email": "admin@example.com"
 }
 ```
 
@@ -302,7 +302,7 @@ An admin user failed login.
 
 ```json
 {
-    "username" => "admin"
+    "username": "admin"
 }
 ```
 
@@ -313,8 +313,8 @@ A customer user logged in.
 
 ```json
 {
-    "id" => 1,
-    "email" => "test@example.com"
+    "id": 1,
+    "email": "test@example.com"
 }
 ```
 
@@ -323,8 +323,8 @@ A customer user logged out.
 
 ```json
 {
-    "id" => 1,
-    "email" => "test@example.com"
+    "id": 1,
+    "email": "test@example.com"
 }
 ```
 
@@ -333,8 +333,8 @@ A customer user failed login.
 
 ```json
 {
-    "username" => "test@example.com"
-    "messages" [
+    "username": "test@example.com",
+    "messages": [
         "The account sign-in was incorrect or your account is disabled temporarily. Please wait and try again later."
     ]
 }
@@ -384,7 +384,9 @@ A customer user change newsletter subscription preference.
     "customerId": 1,
     "email": "test@example.com",
     "isSubscribed": true,
-    "status": "SUBSCRIBED"
+    "status": "SUBSCRIBED",
+    "unsubscriptionLink": "https://..",
+    "code": "1234"
 }
 ```
 ```json
