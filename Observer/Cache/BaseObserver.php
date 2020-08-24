@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitbull\AWSEventBridge\Observer\Cache;
 
 use Bitbull\AWSEventBridge\Observer\BaseObserver as ParentBaseObserver;

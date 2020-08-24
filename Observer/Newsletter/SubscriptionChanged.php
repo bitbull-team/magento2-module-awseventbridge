@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitbull\AWSEventBridge\Observer\Newsletter;
 
 use Magento\Framework\Event\Observer;
@@ -19,11 +20,10 @@ class SubscriptionChanged extends BaseObserver
         $this->eventEmitter->send($this->getFullEventName(), $this->getSubscriberData($subscriber));
 
 
-
         $this->eventEmitter->send($this->getFullEventName(), [
             'customerId' => $subscriber->getCustomerId(),
             'email' => $subscriber->getSubscriberEmail(),
-            'isSubscribed' => (boolean) $subscriber->isSubscribed(),
+            'isSubscribed' => (boolean)$subscriber->isSubscribed(),
             'status' => $status
         ]);
     }

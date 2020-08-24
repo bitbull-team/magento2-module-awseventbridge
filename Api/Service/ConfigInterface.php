@@ -63,8 +63,8 @@ interface ConfigInterface
     /**
      * Check if event is enabled
      *
-     * @param  string $eventName
-     * @param  string $scope
+     * @param string $eventName
+     * @param string $scope
      * @return boolean
      */
     public function isEventEnabled($eventName, $scope = 'global');

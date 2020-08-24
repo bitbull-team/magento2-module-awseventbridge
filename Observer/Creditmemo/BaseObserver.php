@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitbull\AWSEventBridge\Observer\Creditmemo;
 
 use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
@@ -25,10 +26,11 @@ abstract class BaseObserver extends ParentBaseObserver
     /**
      * Get credit memo data
      *
-     * @var \Magento\Sales\Api\Data\CreditmemoInterface $creditMemo
      * @return array
+     * @var \Magento\Sales\Api\Data\CreditmemoInterface $creditMemo
      */
-    public function getCreditmemoData($creditMemo) {
+    public function getCreditmemoData($creditMemo)
+    {
         return [
             'id' => $creditMemo->getIncrementId(),
             'shipping' => $creditMemo->getShippingAmount(),

@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitbull\AWSEventBridge\Observer\Customer;
 
 use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
@@ -26,7 +27,8 @@ class SignedUpFailed extends BaseObserver
         ConfigInterface $config,
         EventEmitter $eventEmitter,
         MessageManagerInterface $messageManager
-    ) {
+    )
+    {
         parent::__construct($logger, $config, $eventEmitter);
         $this->messageManager = $messageManager;
     }

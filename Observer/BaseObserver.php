@@ -43,7 +43,8 @@ abstract class BaseObserver implements ObserverInterface
         LoggerInterface $logger,
         ConfigInterface $config,
         EventEmitter $eventEmitter
-    ) {
+    )
+    {
         $this->logger = $logger;
         $this->config = $config;
         $this->eventEmitter = $eventEmitter;
@@ -57,11 +58,11 @@ abstract class BaseObserver implements ObserverInterface
      */
     private function getReflectionClass()
     {
-        if ($this->reflectionClass  !== null) {
+        if ($this->reflectionClass !== null) {
             return $this->reflectionClass;
         }
         try {
-            $this->reflectionClass =new ReflectionClass($this);
+            $this->reflectionClass = new ReflectionClass($this);
         } catch (\ReflectionException $error) {
             $this->logger->logException($error);
             return null;

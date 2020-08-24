@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitbull\AWSEventBridge\Observer\Customer;
 
 use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
@@ -50,10 +51,11 @@ abstract class BaseObserver extends ParentBaseObserver
     /**
      * Get customer data
      *
-     * @var \Magento\Customer\Model\Data\Customer $customer
      * @return array
+     * @var \Magento\Customer\Model\Data\Customer $customer
      */
-    public function getCustomerData($customer) {
+    public function getCustomerData($customer)
+    {
         return [
             'id' => $customer->getId(),
             'email' => $customer->getEmail(),

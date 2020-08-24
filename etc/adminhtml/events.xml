@@ -1,19 +1,20 @@
 <?xml version="1.0"?>
 
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
 
     <!-- Admin users login -->
 
     <event name="backend_auth_user_login_success">
-        <observer name="awseventbridge_user_logged_in" instance="Bitbull\AWSEventBridge\Observer\User\LoggedIn" />
+        <observer name="awseventbridge_user_logged_in" instance="Bitbull\AWSEventBridge\Observer\User\LoggedIn"/>
     </event>
 
     <event name="backend_auth_user_login_failed">
-        <observer name="awseventbridge_user_login_failed" instance="Bitbull\AWSEventBridge\Observer\User\LoginFailed" />
+        <observer name="awseventbridge_user_login_failed" instance="Bitbull\AWSEventBridge\Observer\User\LoginFailed"/>
     </event>
 
     <event name="controller_action_predispatch_adminhtml_auth_logout">
-        <observer name="awseventbridge_user_logged_out" instance="Bitbull\AWSEventBridge\Observer\User\LoggedOut" />
+        <observer name="awseventbridge_user_logged_out" instance="Bitbull\AWSEventBridge\Observer\User\LoggedOut"/>
     </event>
 
 </config>

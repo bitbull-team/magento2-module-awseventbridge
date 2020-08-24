@@ -1,22 +1,24 @@
 {
-  "name": "bitbull/magento2-module-awseventbridge",
-  "description": "Magento 2 module for AWS EventBridge integration.",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Fabio Gollinucci",
-      "email": "fabio.gollinucci@bitbull.it"
+    "name": "bitbull/magento2-module-awseventbridge",
+    "description": "Magento 2 module for AWS EventBridge integration.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fabio Gollinucci",
+            "email": "fabio.gollinucci@bitbull.it"
+        }
+    ],
+    "require": {
+        "php": "~7.2.0|~7.3.0",
+        "aws/aws-sdk-php": "^3.110"
+    },
+    "type": "magento2-module",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Bitbull\\AWSEventBridge\\": ""
+        }
     }
-  ],
-  "require": {
-    "php": "~7.2.0|~7.3.0",
-    "aws/aws-sdk-php": "^3.110"
-  },
-  "type": "magento2-module",
-  "autoload": {
-    "files": [ "registration.php" ],
-    "psr-4": {
-      "Bitbull\\AWSEventBridge\\": ""
-    }
-  }
 }

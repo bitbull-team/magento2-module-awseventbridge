@@ -1,41 +1,51 @@
 <?xml version="1.0"?>
 
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
 
     <!-- Cart events -->
 
     <event name="checkout_cart_add_product_complete">
-        <observer name="awseventbridge_cart_product_added" instance="Bitbull\AWSEventBridge\Observer\Cart\ProductAdded" />
+        <observer name="awseventbridge_cart_product_added"
+                  instance="Bitbull\AWSEventBridge\Observer\Cart\ProductAdded"/>
     </event>
     <event name="sales_quote_remove_item">
-        <observer name="awseventbridge_cart_product_removed" instance="Bitbull\AWSEventBridge\Observer\Cart\ProductRemoved" />
+        <observer name="awseventbridge_cart_product_removed"
+                  instance="Bitbull\AWSEventBridge\Observer\Cart\ProductRemoved"/>
     </event>
     <event name="checkout_cart_update_items_before">
-        <observer name="awseventbridge_cart_product_updated" instance="Bitbull\AWSEventBridge\Observer\Cart\ProductUpdated" />
+        <observer name="awseventbridge_cart_product_updated"
+                  instance="Bitbull\AWSEventBridge\Observer\Cart\ProductUpdated"/>
     </event>
 
     <!-- Customer login -->
 
     <event name="customer_login">
-        <observer name="awseventbridge_customer_logged_in" instance="Bitbull\AWSEventBridge\Observer\Customer\LoggedIn" />
+        <observer name="awseventbridge_customer_logged_in"
+                  instance="Bitbull\AWSEventBridge\Observer\Customer\LoggedIn"/>
     </event>
     <event name="controller_action_predispatch_customer_account_logout">
-        <observer name="awseventbridge_customer_logged_out" instance="Bitbull\AWSEventBridge\Observer\Customer\LoggedOut" />
+        <observer name="awseventbridge_customer_logged_out"
+                  instance="Bitbull\AWSEventBridge\Observer\Customer\LoggedOut"/>
     </event>
     <event name="controller_action_postdispatch_customer_account_loginPost">
-        <observer name="awseventbridge_customer_login_failed" instance="Bitbull\AWSEventBridge\Observer\Customer\LoginFailed"/>
+        <observer name="awseventbridge_customer_login_failed"
+                  instance="Bitbull\AWSEventBridge\Observer\Customer\LoginFailed"/>
     </event>
     <event name="customer_register_success">
-        <observer name="awseventbridge_customer_signed_up" instance="Bitbull\AWSEventBridge\Observer\Customer\SignedUp"/>
+        <observer name="awseventbridge_customer_signed_up"
+                  instance="Bitbull\AWSEventBridge\Observer\Customer\SignedUp"/>
     </event>
     <event name="controller_action_postdispatch_customer_account_createPost">
-        <observer name="awseventbridge_customer_signed_up_failed" instance="Bitbull\AWSEventBridge\Observer\Customer\SignedUpFailed"/>
+        <observer name="awseventbridge_customer_signed_up_failed"
+                  instance="Bitbull\AWSEventBridge\Observer\Customer\SignedUpFailed"/>
     </event>
 
     <!-- Newsletter -->
 
     <event name="newsletter_subscriber_save_before">
-        <observer name="awseventbridge_newsletter_subscription_changed" instance="Bitbull\AWSEventBridge\Observer\Newsletter\SubscriptionChanged"/>
+        <observer name="awseventbridge_newsletter_subscription_changed"
+                  instance="Bitbull\AWSEventBridge\Observer\Newsletter\SubscriptionChanged"/>
     </event>
 
 </config>

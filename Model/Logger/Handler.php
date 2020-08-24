@@ -2,8 +2,9 @@
 
 namespace Bitbull\AWSEventBridge\Model\Logger;
 
-use Magento\Framework\Logger\Handler\Base;
+use Exception;
 use Magento\Framework\Filesystem\DriverInterface;
+use Magento\Framework\Logger\Handler\Base;
 
 class Handler extends Base
 {
@@ -24,14 +25,14 @@ class Handler extends Base
      * @param DriverInterface $filesystem
      * @param string $filePath
      * @param string $fileName
+     * @throws Exception
      */
     public function __construct(
         DriverInterface $filesystem,
         $filePath = null,
         $fileName = null
     ) {
-
-        $this->fileName = '/var/log/'.self::LOG_FILE_NAME;
+        $this->fileName = '/var/log/' . self::LOG_FILE_NAME;
 
         parent::__construct($filesystem, $filePath, $fileName);
     }

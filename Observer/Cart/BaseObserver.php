@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitbull\AWSEventBridge\Observer\Cart;
 
 use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;

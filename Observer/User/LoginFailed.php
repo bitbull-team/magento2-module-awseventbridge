@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitbull\AWSEventBridge\Observer\User;
 
 use Bitbull\AWSEventBridge\Observer\BaseObserver;

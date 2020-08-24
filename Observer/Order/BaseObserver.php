@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitbull\AWSEventBridge\Observer\Order;
 
 use Bitbull\AWSEventBridge\Observer\BaseObserver as ParentBaseObserver;
@@ -21,10 +22,11 @@ abstract class BaseObserver extends ParentBaseObserver
     /**
      * Get order data
      *
-     * @var \Magento\Sales\Api\Data\OrderInterface $order
      * @return array
+     * @var \Magento\Sales\Api\Data\OrderInterface $order
      */
-    public function getOrderData($order) {
+    public function getOrderData($order)
+    {
         return [
             'id' => $order->getIncrementId(),
             'status' => $order->getStatus(),

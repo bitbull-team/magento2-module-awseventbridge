@@ -72,14 +72,14 @@ class Config implements ConfigInterface
      */
     public function getCredentials()
     {
-        $credentialType = (string) $this->scopeConfig->getValue(self::XML_PATH_CREDENTIALS_TYPE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $credentialType = (string)$this->scopeConfig->getValue(self::XML_PATH_CREDENTIALS_TYPE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if ($credentialType !== null && $credentialType !== AuthenticationTypes::TYPE_KEYS) {
             return [];
         }
 
         return [
-            'key' => (string) $this->scopeConfig->getValue(self::XML_PATH_ACCESS_KEY, \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
-            'secret' => (string) $this->scopeConfig->getValue(self::XML_PATH_SECRET_ACCESS_KEY, \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+            'key' => (string)$this->scopeConfig->getValue(self::XML_PATH_ACCESS_KEY, \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
+            'secret' => (string)$this->scopeConfig->getValue(self::XML_PATH_SECRET_ACCESS_KEY, \Magento\Store\Model\ScopeInterface::SCOPE_STORE),
         ];
     }
 
@@ -106,7 +106,7 @@ class Config implements ConfigInterface
      */
     public function getEventBusName()
     {
-        return  $this->scopeConfig->getValue(self::XML_PATH_EVENT_BUS, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->getValue(self::XML_PATH_EVENT_BUS, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -147,7 +147,7 @@ class Config implements ConfigInterface
     public function isEventEnabled($eventName, $scopeName = null)
     {
         // Search for pre-cached value to avoid config name transformation
-        $cacheKey = self::XML_PATH_EVENT_PREFIX  . $scopeName . $eventName;
+        $cacheKey = self::XML_PATH_EVENT_PREFIX . $scopeName . $eventName;
         $cachedFlag = $this->cache->load($cacheKey);
         if ($cachedFlag !== false && is_string($cachedFlag) === true) {
             return $cachedFlag === 'enabled';
@@ -157,7 +157,7 @@ class Config implements ConfigInterface
         $eventName = strtolower(preg_replace('/(?<!^|\\\)[A-Z]/', '_$0', $eventName)); // convert from CamelCase to snake_case
         $scopeName = $scopeName !== null ? strtolower(preg_replace('/(?<!^|\\\)[A-Z]/', '_$0', $scopeName)) : null; // convert from CamelCase to snake_case if not null
         $configName = $scopeName === null ? $eventName : "$scopeName/$eventName"; // concatenate scope and event name
-        $isEnable = $this->scopeConfig->isSetFlag(self::XML_PATH_EVENT_PREFIX  . $configName);
+        $isEnable = $this->scopeConfig->isSetFlag(self::XML_PATH_EVENT_PREFIX . $configName);
 
         // Store in cache
         $this->cache->save($isEnable === true ? 'enabled' : 'disabled', $cacheKey, [

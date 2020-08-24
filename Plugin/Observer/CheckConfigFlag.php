@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitbull\AWSEventBridge\Plugin\Observer;
 
 use Bitbull\AWSEventBridge\Api\ObserverInterface;
@@ -24,7 +25,8 @@ class CheckConfigFlag
     public function __construct(
         LoggerInterface $logger,
         ConfigInterface $config
-    ) {
+    )
+    {
         $this->logger = $logger;
         $this->config = $config;
     }

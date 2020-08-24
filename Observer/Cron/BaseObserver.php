@@ -1,11 +1,8 @@
 <?php
+
 namespace Bitbull\AWSEventBridge\Observer\Cron;
 
-use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
-use Bitbull\AWSEventBridge\Api\Service\LoggerInterface;
-use Bitbull\AWSEventBridge\Model\Service\EventEmitter;
 use Bitbull\AWSEventBridge\Observer\BaseObserver as ParentBaseObserver;
-use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\Event\Observer;
 
 abstract class BaseObserver extends ParentBaseObserver
@@ -23,10 +20,11 @@ abstract class BaseObserver extends ParentBaseObserver
     /**
      * Get job data
      *
-     * @var array $job
      * @return array
+     * @var array $job
      */
-    public function getJobData($job) {
+    public function getJobData($job)
+    {
         return [
             'code' => $job['code'],
             'groupId' => $job['groupId'],

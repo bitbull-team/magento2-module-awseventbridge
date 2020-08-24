@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
 
     <!-- Order -->
 
@@ -22,7 +23,8 @@
         <observer name="awseventbridge_invoice_saved" instance="Bitbull\AWSEventBridge\Observer\Invoice\Saved"/>
     </event>
     <event name="sales_order_invoice_register">
-        <observer name="awseventbridge_invoice_registered" instance="Bitbull\AWSEventBridge\Observer\Invoice\Registered"/>
+        <observer name="awseventbridge_invoice_registered"
+                  instance="Bitbull\AWSEventBridge\Observer\Invoice\Registered"/>
     </event>
     <event name="sales_order_invoice_pay">
         <observer name="awseventbridge_invoice_payed" instance="Bitbull\AWSEventBridge\Observer\Invoice\Payed"/>
@@ -37,10 +39,12 @@
         <observer name="awseventbridge_creditmemo_saved" instance="Bitbull\AWSEventBridge\Observer\Creditmemo\Saved"/>
     </event>
     <event name="sales_order_creditmemo_refund">
-        <observer name="awseventbridge_creditmemo_refunded" instance="Bitbull\AWSEventBridge\Observer\Creditmemo\Refunded"/>
+        <observer name="awseventbridge_creditmemo_refunded"
+                  instance="Bitbull\AWSEventBridge\Observer\Creditmemo\Refunded"/>
     </event>
     <event name="sales_order_creditmemo_delete_after">
-        <observer name="awseventbridge_creditmemo_deleted" instance="Bitbull\AWSEventBridge\Observer\Creditmemo\Deleted"/>
+        <observer name="awseventbridge_creditmemo_deleted"
+                  instance="Bitbull\AWSEventBridge\Observer\Creditmemo\Deleted"/>
     </event>
 
     <!-- Shipment -->
@@ -55,30 +59,34 @@
     <!-- Cache -->
 
     <event name="adminhtml_cache_flush_system">
-        <observer name="awseventbridge_cache_flush_system" instance="Bitbull\AWSEventBridge\Observer\Cache\FlushSystem" />
+        <observer name="awseventbridge_cache_flush_system"
+                  instance="Bitbull\AWSEventBridge\Observer\Cache\FlushSystem"/>
     </event>
     <event name="adminhtml_cache_flush_all">
-        <observer name="awseventbridge_cache_flush_all" instance="Bitbull\AWSEventBridge\Observer\Cache\FlushAll" />
+        <observer name="awseventbridge_cache_flush_all" instance="Bitbull\AWSEventBridge\Observer\Cache\FlushAll"/>
     </event>
     <event name="clean_media_cache_after">
-        <observer name="awseventbridge_cache_flush_media" instance="Bitbull\AWSEventBridge\Observer\Cache\FlushMedia" />
+        <observer name="awseventbridge_cache_flush_media" instance="Bitbull\AWSEventBridge\Observer\Cache\FlushMedia"/>
     </event>
     <event name="clean_catalog_images_cache_after">
-        <observer name="awseventbridge_cache_flush_images" instance="Bitbull\AWSEventBridge\Observer\Cache\FlushCatalogImages" />
+        <observer name="awseventbridge_cache_flush_images"
+                  instance="Bitbull\AWSEventBridge\Observer\Cache\FlushCatalogImages"/>
     </event>
     <event name="clean_static_files_cache_after">
-        <observer name="awseventbridge_cache_flush_static_files" instance="Bitbull\AWSEventBridge\Observer\Cache\FlushStaticFiles" />
+        <observer name="awseventbridge_cache_flush_static_files"
+                  instance="Bitbull\AWSEventBridge\Observer\Cache\FlushStaticFiles"/>
     </event>
 
     <!-- Cron -->
     <event name="cron_job_start">
-        <observer name="awseventbridge_cron_job_start" instance="Bitbull\AWSEventBridge\Observer\Cron\Started" />
+        <observer name="awseventbridge_cron_job_start" instance="Bitbull\AWSEventBridge\Observer\Cron\Started"/>
     </event>
     <event name="cron_job_error">
-        <observer name="awseventbridge_cron_job_error" instance="Bitbull\AWSEventBridge\Observer\Cron\FinishedError" />
+        <observer name="awseventbridge_cron_job_error" instance="Bitbull\AWSEventBridge\Observer\Cron\FinishedError"/>
     </event>
     <event name="cron_job_success">
-        <observer name="awseventbridge_cron_job_success" instance="Bitbull\AWSEventBridge\Observer\Cron\FinishedSuccess" />
+        <observer name="awseventbridge_cron_job_success"
+                  instance="Bitbull\AWSEventBridge\Observer\Cron\FinishedSuccess"/>
     </event>
 
 </config>

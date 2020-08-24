@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitbull\AWSEventBridge\Observer\Invoice;
 
 use Bitbull\AWSEventBridge\Observer\BaseObserver as ParentBaseObserver;
@@ -21,10 +22,11 @@ abstract class BaseObserver extends ParentBaseObserver
     /**
      * Get invoice data
      *
-     * @var \Magento\Sales\Api\Data\InvoiceInterface $invoice
      * @return array
+     * @var \Magento\Sales\Api\Data\InvoiceInterface $invoice
      */
-    public function getInvoiceData($invoice) {
+    public function getInvoiceData($invoice)
+    {
         return [
             'id' => $invoice->getIncrementId(),
             'orderId' => $invoice->getOrderId(),

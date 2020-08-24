@@ -97,7 +97,8 @@ class Tracking implements TrackingInterface
         AppState $appState,
         BackendUserSession $backendUserSession,
         CustomerSession $customerSession
-    ) {
+    )
+    {
         $this->logger = $logger;
         $this->productMetadata = $productMetadata;
         $this->request = $request;
@@ -162,7 +163,7 @@ class Tracking implements TrackingInterface
     public function getRemoteAddr()
     {
         $remoteAddr = $this->request->getClientIp(true);
-        if ($remoteAddr !== null && strpos($remoteAddr, ',') !== false){
+        if ($remoteAddr !== null && strpos($remoteAddr, ',') !== false) {
             $remoteAddrParts = explode(',', $remoteAddr);
             $remoteAddr = $remoteAddrParts[0];
         }
@@ -184,7 +185,8 @@ class Tracking implements TrackingInterface
     /**
      * @inheritDoc
      */
-    public function getCurrentUserName() {
+    public function getCurrentUserName()
+    {
         if ($this->isInConsole === true) {
             return posix_getpwuid(posix_geteuid());
         }
@@ -212,7 +214,8 @@ class Tracking implements TrackingInterface
     /**
      * @inheritDoc
      */
-    public function getCurrentStoreId() {
+    public function getCurrentStoreId()
+    {
         try {
             $currentStore = $this->storeManager->getStore();
         } catch (NoSuchEntityException $e) {

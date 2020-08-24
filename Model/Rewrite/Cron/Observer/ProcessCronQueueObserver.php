@@ -1,8 +1,9 @@
 <?php
+
 namespace Bitbull\AWSEventBridge\Model\Rewrite\Cron\Observer;
 
-use \Magento\Cron\Observer\ProcessCronQueueObserver as BaseProcessCronQueueObserver;
-use \Magento\Framework\Event\Manager as EventManager;
+use Magento\Cron\Observer\ProcessCronQueueObserver as BaseProcessCronQueueObserver;
+use Magento\Framework\Event\Manager as EventManager;
 use Magento\Framework\Profiler\Driver\Standard\StatFactory;
 
 class ProcessCronQueueObserver extends BaseProcessCronQueueObserver
@@ -64,7 +65,8 @@ class ProcessCronQueueObserver extends BaseProcessCronQueueObserver
     /**
      * @inheritDoc
      */
-    protected function _runJob($scheduledTime, $currentTime, $jobConfig, $schedule, $groupId) {
+    protected function _runJob($scheduledTime, $currentTime, $jobConfig, $schedule, $groupId)
+    {
         $trackingJobData = [
             'scheduledTime' => $scheduledTime,
             'currentTime' => $currentTime,

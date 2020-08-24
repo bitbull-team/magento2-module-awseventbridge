@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitbull\AWSEventBridge\Observer\Newsletter;
 
 use Bitbull\AWSEventBridge\Observer\BaseObserver as ParentBaseObserver;
@@ -21,8 +22,8 @@ abstract class BaseObserver extends ParentBaseObserver
     /**
      * Get subscriber data
      *
-     * @var \Magento\Newsletter\Model\Subscriber $subscriber
      * @return array
+     * @var \Magento\Newsletter\Model\Subscriber $subscriber
      */
     public function getSubscriberData($subscriber)
     {
@@ -40,14 +41,14 @@ abstract class BaseObserver extends ParentBaseObserver
                 $status = 'UNCONFIRMED';
                 break;
             default:
-                $status = (string) $subscriber->getStatus();
+                $status = (string)$subscriber->getStatus();
         }
 
         return [
             'email' => $subscriber->getEmail(),
             'unsubscriptionLink' => $subscriber->getUnsubscriptionLink(),
             'code' => $subscriber->getCode(),
-            'isSubscribed' => (boolean) $subscriber->isSubscribed(),
+            'isSubscribed' => (boolean)$subscriber->isSubscribed(),
             'status' => $status
         ];
     }

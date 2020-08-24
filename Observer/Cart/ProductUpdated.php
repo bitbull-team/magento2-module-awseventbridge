@@ -1,4 +1,5 @@
 <?php
+
 namespace Bitbull\AWSEventBridge\Observer\Cart;
 
 use Magento\Framework\Event\Observer;
@@ -18,7 +19,7 @@ class ProductUpdated extends BaseObserver
         foreach ($items as $item) {
             $qtyFrom = $item->getQty();
             if (!isset($info[$item->getId()]) || !isset($info[$item->getId()]['qty'])) {
-                $this->logger->warn('Invalid observer data: '.$item->getId().' not found in infos, tracking skipped', [
+                $this->logger->warn('Invalid observer data: ' . $item->getId() . ' not found in infos, tracking skipped', [
                     'info' => $info,
                     'item' => $item->getId()
                 ]);
@@ -29,10 +30,10 @@ class ProductUpdated extends BaseObserver
 
             if ($qtyDiff > 0) {
                 $event = 'add';
-            }else if($qtyDiff < 0){
+            } else if ($qtyDiff < 0) {
                 $event = 'remove';
-            }else{
-                $this->logger->warn('Product "'. $item->getName() .'" has no changes, qty delta is 0, tracking skipped');
+            } else {
+                $this->logger->warn('Product "' . $item->getName() . '" has no changes, qty delta is 0, tracking skipped');
                 continue;
             }
 
