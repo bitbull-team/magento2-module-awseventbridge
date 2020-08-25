@@ -1,3 +1,12 @@
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:communication/etc/communication.xsd">
-    <topic name="async.V1.aws.eventbridge.events.SEND" request="string" />
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Communication/etc/communication.xsd">
+    <topic name="aws.eventbridge.events.send" request="string" response="string">
+        <handler name="aws.eventbridge.events.send" type="Bitbull\AWSEventBridge\Model\Service\QueueConsumer" method="process" />
+    </topic>
 </config>

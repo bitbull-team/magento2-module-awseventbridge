@@ -2,18 +2,19 @@
 
 namespace Bitbull\AWSEventBridge\Model\Service;
 
+use Aws\CloudWatchEvents\CloudWatchEventsClient;
+use Aws\EventBridge\EventBridgeClient;
 use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
 use Bitbull\AWSEventBridge\Api\Service\EventEmitterInterface;
 use Bitbull\AWSEventBridge\Api\Service\LoggerInterface;
-use Aws\CloudWatchEvents\CloudWatchEventsClient;
-use Aws\EventBridge\EventBridgeClient;
 use Bitbull\AWSEventBridge\Api\Service\TrackingInterface;
-use Magento\Framework\Serialize\Serializer\Json as SerializerJson;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Serialize\Serializer\Json as SerializerJson;
+use Magento\Framework\Stdlib\DateTime\DateTime;
 
 class EventEmitter implements EventEmitterInterface
 {
-    const TOPIC_NAME = 'async.V1.aws.eventbridge.events.SEND';
+    const TOPIC_NAME = 'aws.eventbridge.events.send';
 
     /**
      * @var LoggerInterface
@@ -74,6 +75,10 @@ class EventEmitter implements EventEmitterInterface
      * @var boolean
      */
     private $queueMode;
+    /**
+     * @var DateTime
+     */
+    private $date;
 
     /**
      * Event emitter.
@@ -82,16 +87,19 @@ class EventEmitter implements EventEmitterInterface
      * @param ConfigInterface $config
      * @param SerializerJson $serializerJson
      * @param TrackingInterface $tracking
+     * @param DateTime $date
      */
     public function __construct(
         LoggerInterface $logger,
         ConfigInterface $config,
         SerializerJson $serializerJson,
-        TrackingInterface $tracking
+        TrackingInterface $tracking,
+        DateTime $date
     ) {
         $this->logger = $logger;
         $this->serializerJson = $serializerJson;
         $this->tracking = $tracking;
+        $this->date = $date;
 
         $this->source = $config->getSource();
         $this->dryRun = $config->isDryRunModeEnabled();
@@ -118,7 +126,6 @@ class EventEmitter implements EventEmitterInterface
                     ]);
                 } catch (\Exception $exception) {
                     $this->logger->logException($exception);
-
                 }
             } else {
                 try {
@@ -137,6 +144,11 @@ class EventEmitter implements EventEmitterInterface
     /** @inheritDoc */
     public function send($eventName, $eventData)
     {
+        // set date and timestamp data
+        $eventData['date'] = $this->date->gmtDate();
+        $eventData['timestamp'] = $this->date->gmtTimestamp();
+
+        // conditionally send event synchronously or asynchronously (with queue)
         if ($this->queueMode === true) {
             $this->addEventToQueue($eventName, $eventData);
         } else {
@@ -167,7 +179,7 @@ class EventEmitter implements EventEmitterInterface
             $this->logger->logException($exception);
             return;
         }
-        $this->logger->debug("Event '$eventName' published to topic '". self::TOPIC_NAME ."' with data: ".print_r($eventData, true));
+        $this->logger->debug("Event '$eventName' published to topic '" . self::TOPIC_NAME . "' with data: " . print_r($eventData, true));
     }
 
     /**

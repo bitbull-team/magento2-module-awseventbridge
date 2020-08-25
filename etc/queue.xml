@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:MessageQueue/etc/queue.xsd">
-    <broker topic="async.V1.aws.eventbridge.events.SEND" exchange="magento-db" type="db" >
-        <queue consumer="awsEventBridgeConsumer" name="aws_eventbridge_events"
-               handler="Bitbull\AWSEventBridge\Model\Handler\Events\SendEventAsync::processQueueMessage"
-               consumerInstance="Magento\Framework\MessageQueue\Consumer"/>
-    </broker>
-</config>
