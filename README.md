@@ -464,7 +464,7 @@ An invoice was created or updated.
 ```json
 {
   "orderId": "000000001",
-  "status": "PAID",
+  "status": "OPEN",
   "billingAddress":{
     "countryId": "IT",
     "region": null,
@@ -489,19 +489,101 @@ An invoice was created or updated.
 `InvoicePayed`
 An invoice was payed.
 
+```json
+{
+  "orderId": "000000001",
+  "status": "PAID",
+  "billingAddress":{
+    "countryId": "IT",
+    "region": null,
+    "street": [
+      "via di test"
+    ],
+    "city": "Test",
+    "postCode": "12345"
+  },
+  "shippingAmount": "10.0000",
+  "taxAmount": 0,
+  "total": 77,
+  "items": [{
+      "sku": "WS12-M-Purple",
+      "name": "Radiant Tee",
+      "price": "22.0000",
+      "qty": 1
+  }]
+}
+```
+
 `InvoiceRegistered`
 An invoice was registered.
+
+```json
+{
+  "orderId": "000000001",
+  "status": "PAID",
+  "billingAddress":{
+    "countryId": "IT",
+    "region": null,
+    "street": [
+      "via di test"
+    ],
+    "city": "Test",
+    "postCode": "12345"
+  },
+  "shippingAmount": "10.0000",
+  "taxAmount": 0,
+  "total": 77,
+  "items": [{
+      "sku": "WS12-M-Purple",
+      "name": "Radiant Tee",
+      "price": "22.0000",
+      "qty": 1
+  }]
+}
+```
 
 `OrderDeleted`
 An invoice was deleted.
 
 #### Credit Memo events
 
-`CreditmemoCreated` / `CreditmemoUpdated`
-A credit memo was saved.
+`CreditmemoSaved`
+A credit memo was created or updated.
+
+```json
+{
+  "orderId": "000000001",
+  "shippingAmount": 10,
+  "taxAmount": 0,
+  "total": 77,
+  "status": "OPEN",
+  "items": [{
+      "sku":"WS12-M-Purple",
+      "name":"Radiant Tee",
+      "price":"22.0000",
+      "quantity":1
+   }]
+}
+```
 
 `CreditmemoRefunded`
 A credit memo was refunded.
+
+```json
+{
+  "orderId": "000000001",
+  "shippingAmount": 10,
+  "taxAmount": 0,
+  "total": 77,
+  "status": "REFUNDED",
+  "items": [{
+      "sku":"WS12-M-Purple",
+      "name":"Radiant Tee",
+      "price":"22.0000",
+      "quantity":1
+   }]
+}
+```
 
 `CreditmemoDeleted`
 A credit memo was deleted.
@@ -541,14 +623,53 @@ A shipment was deleted.
 `CacheFlushAll`
 An admin user flush the cache.
 
+```json
+{}
+```
+
 `CacheFlushSystem`
 An admin user flush system cache.
+
+```json
+{}
+```
 
 `CacheFlushCatalogImages`
 An admin user flush catalog images cache.
 
+```json
+{}
+```
+
 `CacheFlushMedia`
 An admin user flush media cache.
 
+```json
+{}
+```
+
 `CacheFlushStaticFiles`
 An admin user flush static files cache.
+
+```json
+{}
+```
+
+#### Indexer events
+
+`StateSaved`
+An index change state.
+
+```json
+{
+  "index": "catalog_product_price",
+  "status": "working"
+}
+```
+```json
+{
+  "index": "catalogsearch_fulltext",
+  "status": "valid"
+}
+```
+

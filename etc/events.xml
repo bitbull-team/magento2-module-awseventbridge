@@ -22,10 +22,6 @@
     <event name="sales_order_invoice_save_after">
         <observer name="awseventbridge_invoice_saved" instance="Bitbull\AWSEventBridge\Observer\Invoice\Saved"/>
     </event>
-    <event name="sales_order_invoice_register">
-        <observer name="awseventbridge_invoice_registered"
-                  instance="Bitbull\AWSEventBridge\Observer\Invoice\Registered"/>
-    </event>
     <event name="sales_order_invoice_pay">
         <observer name="awseventbridge_invoice_payed" instance="Bitbull\AWSEventBridge\Observer\Invoice\Payed"/>
     </event>
@@ -62,7 +58,6 @@
         <observer name="awseventbridge_shipment_deleted" instance="Bitbull\AWSEventBridge\Observer\Shipment\Deleted"/>
     </event>
 
-
     <!-- Cache -->
 
     <event name="adminhtml_cache_flush_system">
@@ -82,6 +77,7 @@
     </event>
 
     <!-- Cron -->
+
     <event name="cron_job_start">
         <observer name="awseventbridge_cron_job_start" instance="Bitbull\AWSEventBridge\Observer\Cron\Started"/>
     </event>
@@ -90,6 +86,12 @@
     </event>
     <event name="cron_job_success">
         <observer name="awseventbridge_cron_job_success" instance="Bitbull\AWSEventBridge\Observer\Cron\FinishedSuccess"/>
+    </event>
+
+    <!-- Indexer -->
+
+    <event name="indexer_state_save_before">
+        <observer name="awseventbridge_cron_job_start" instance="Bitbull\AWSEventBridge\Observer\Indexer\StateSaved"/>
     </event>
 
 </config>

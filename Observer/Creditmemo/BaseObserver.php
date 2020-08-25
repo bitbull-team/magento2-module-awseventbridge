@@ -32,7 +32,7 @@ abstract class BaseObserver extends ParentBaseObserver
      */
     public function getCreditmemoData($creditMemo)
     {
-        switch ($creditMemo->getCreditmemoStatus()) {
+        switch ($creditMemo->getState()) {
             case Creditmemo::STATE_OPEN:
                 $status = 'OPEN';
                 break;
@@ -43,11 +43,16 @@ abstract class BaseObserver extends ParentBaseObserver
                 $status = 'CANCELED';
                 break;
             default:
-                $status = (string) $creditMemo->getStatus();
+                $status = (string) $creditMemo->getState();
+        }
+
+        $items = $creditMemo->getItems();
+        if (is_object($items)) {
+            $items = $items->getItems();
         }
 
         return [
-            'id' => $creditMemo->getIncrementId(),
+            'orderId' => $creditMemo->getOrder()->getIncrementId(),
             'shippingAmount' => $creditMemo->getShippingAmount(),
             'taxAmount' => $creditMemo->getTaxAmount(),
             'total' => $creditMemo->getGrandTotal(),
@@ -60,7 +65,7 @@ abstract class BaseObserver extends ParentBaseObserver
                     'price' => $item->getPrice(),
                     'quantity' => $item->getQty(),
                 ];
-            }, $creditMemo->getItems())
+            }, $items)
         ];
     }
 }

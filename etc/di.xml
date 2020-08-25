@@ -138,10 +138,6 @@
         <plugin name="AroundEventInvoiceSaved" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag"
                 sortOrder="1" disabled="false"/>
     </type>
-    <type name="Bitbull\AWSEventBridge\Observer\Invoice\Registered">
-        <plugin name="AroundEventInvoiceRegistered" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag"
-                sortOrder="1" disabled="false"/>
-    </type>
     <type name="Bitbull\AWSEventBridge\Observer\Invoice\Payed">
         <plugin name="AroundEventInvoicePayed" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag"
                 sortOrder="1" disabled="false"/>
@@ -212,6 +208,13 @@
     </type>
     <type name="Bitbull\AWSEventBridge\Observer\Cron\FinishedSuccess">
         <plugin name="AroundEventCronFinishedSuccess" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag"
+                sortOrder="1" disabled="false"/>
+    </type>
+
+    <!-- Observers indexer -->
+
+    <type name="Bitbull\AWSEventBridge\Observer\Indexer\StateSaved">
+        <plugin name="AroundEventIndexerStateSaved" type="Bitbull\AWSEventBridge\Plugin\Observer\CheckConfigFlag"
                 sortOrder="1" disabled="false"/>
     </type>
 
