@@ -74,6 +74,11 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment><![CDATA[Enable source event tracking.]]></comment>
                 </field>
+                <field id="queue_mode" translate="label" type="select" sortOrder="5" showInDefault="2" showInWebsite="2" showInStore="2">
+                    <label>Queue mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Send events asynchronously using Magento queue instead of real-time (only available on Magento Enterprise edition).]]></comment>
+                </field>
                 <field id="debug_mode" translate="label" type="select" sortOrder="6" showInDefault="1" showInWebsite="1"
                        showInStore="1">
                     <label>Debug mode</label>
