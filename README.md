@@ -1,14 +1,29 @@
-## Magento 2 module AWS EventBridge integration
+# Amazon EventBridge integration module for Magento 2 
 
 Send Magento events to [Amazon EventBridge](https://aws.amazon.com/eventbridge/) service to be able to integrate Magento with many different AWS serverless services. 
 
 ![Packagist](https://img.shields.io/packagist/v/bitbull/magento2-module-awseventbridge)
 
-![Magento](https://img.shields.io/badge/magento-~2.3.4-orange)
+![Magento](https://img.shields.io/badge/magento-~2.3.4-red)
 
 ![PHP](https://img.shields.io/packagist/php-v/bitbull/magento2-module-awseventbridge)
 
-## Installation Instructions
+## Contents
+
+- [Installation instructions](#installation-instructions)
+- [IAM permissions required](#iam-permissions-required)
+- [Setup](#setup)
+    - [Credentials](#credentials)
+    - [Options](#options)
+- [Events](#events)
+    - [Enable events](#enable-events)
+    - [Create an AWS EventBridge Rule](#create-an-aws-eventbridge-rule)
+    - [Data specification](#data-specification)
+    - [Supported Events](#supported-events)
+- [Debug and local testing](#debug-and-local-testing)
+- [Contributing](#contributing)
+
+## Installation instructions
 
 Install this module using composer: 
 
@@ -111,13 +126,16 @@ If you enable the "Queue mode" you also need to enable cron consumer runner into
 ```
 N.B. cron events are always executed synchronously without using queue.
 
-![Events](./doc/imgs/config-cart-events.png?raw=true)
-
-These sections contain a list of supported events that can be activated and used to trigger Lambda functions, send event to an SNS topic, add message to SQS Queue, execute a StepFunction and so on..
-
 ## Events 
 
 This module inject observers to listen to Magento 2 events, elaborate the payload and then send the event to AWS services.
+
+### Enable events
+
+![Events](./doc/imgs/config-cart-events.png?raw=true)
+
+These option sections contain a list of supported events that can be activated and used to trigger Lambda functions, send event to an SNS topic, add message to SQS Queue, execute a StepFunction and so on. 
+Enable events you want to receive to be able to trigger your EventBridge Rules.
 
 ### Create an AWS EventBridge Rule
 
@@ -776,3 +794,35 @@ An index change state.
 }
 ```
 
+## Debug and local testing
+
+Module log are written in `var/log/aws-eventbridge.log` log file.
+
+Enable "debug mode" option to increase logging level and retrieve more details about module operations.
+
+```
+[2020-08-26 10:49:36] report.DEBUG: Event 'User/LoginFailed' captured, executing.. [] []
+[2020-08-26 10:49:36] report.DEBUG: Event 'User/LoginFailed' executed in 0.002s [] []
+```
+
+Enable "dry run mode" to test module without configuring credentials. 
+This options skip AWS API call and allow you to test locally without need a AWS Account.
+
+```
+[2020-08-26 10:49:36] report.DEBUG: [DryRun] Sending event 'UserLoginFailed' with data: Array
+(
+    [username] => admin@admin.com
+    [metadata] => Array
+        (
+            [date] => 2020-08-26 10:49:36
+            [timestamp] => 1598438976
+            [async] => 
+        )
+)
+ [] []
+[2020-08-26 10:49:36] report.DEBUG: [DryRun] Event 'UserLoginFailed' sent with id 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' [] []
+```
+
+## Contributing
+
+Any help is appreciated. If you want to contribute first read the [contribution guide](CONTRIBUTING.md).
