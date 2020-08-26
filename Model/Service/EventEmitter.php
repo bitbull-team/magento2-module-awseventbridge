@@ -142,14 +142,21 @@ class EventEmitter implements EventEmitterInterface
     }
 
     /** @inheritDoc */
-    public function send($eventName, $eventData)
+    public function addEventMetadata($eventData)
     {
-        // set date and timestamp metadata
         $eventData['metadata'] = [
             'date' => $this->date->gmtDate(),
             'timestamp' => $this->date->gmtTimestamp(),
             'async' => $this->queueMode
         ];
+        return $eventData;
+    }
+
+    /** @inheritDoc */
+    public function send($eventName, $eventData)
+    {
+        // Add event metadata
+        $eventData = $this->addEventMetadata($eventData);
 
         // conditionally send event synchronously or asynchronously (with queue)
         if ($this->queueMode === true) {

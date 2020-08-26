@@ -14,7 +14,13 @@ abstract class BaseObserver extends ParentBaseObserver
     public function execute(Observer $observer)
     {
         $job = $observer->getData();
-        $this->eventEmitter->send($this->getFullEventName(), $this->getJobData($job));
+        $data = $this->getJobData($job);
+
+        // manually add event metadata
+        $data = $this->eventEmitter->addEventMetadata($data);
+
+        // bypass queue mode check and force synchronous send
+        $this->eventEmitter->sendImmediately($this->getFullEventName(), $data);
     }
 
     /**

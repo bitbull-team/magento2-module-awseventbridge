@@ -93,11 +93,7 @@ Edit module options:
 - Enable dry run mode to activate the module actions and integrations without actually sending events data.
 - Enable Queue mode to send events asynchronously using Magento queue instead of real-time (only available on Magento Enterprise edition).
 
-If you enable the "Queue mode" you also need to start the queue consumer in order to process events queue:
-```bash
-bin/magento queue:consumers:start aws.eventbridge.events.send --single-thread --max-messages=5
-``` 
-or enable cron consumer runner into your env.php
+If you enable the "Queue mode" you also need to enable cron consumer runner into your env.php
 ```php
     'cron_consumers_runner' => [
         'max_messages' => 5,
@@ -107,6 +103,7 @@ or enable cron consumer runner into your env.php
         ]
     ]
 ```
+N.B. cron events are always executed synchronously without using queue.
 
 ![Events](./doc/imgs/config-cart-events.png?raw=true)
 
