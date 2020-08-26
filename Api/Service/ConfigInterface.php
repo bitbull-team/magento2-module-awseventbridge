@@ -68,4 +68,11 @@ interface ConfigInterface
      * @return boolean
      */
     public function isEventEnabled($eventName, $scope = 'global');
+
+    /**
+     * Check if queue mode is enabled
+     *
+     * @return boolean
+     */
+    public function isQueueModeEnabled();
 }

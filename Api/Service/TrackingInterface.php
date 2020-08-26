@@ -26,6 +26,13 @@ interface TrackingInterface
     public function getMagentoVersion();
 
     /**
+     * Get current Magento edition
+     *
+     * @return string "Community" or "Enterprise"
+     */
+    public function getMagentoEdition();
+
+    /**
      * Get current installed module version
      *
      * @return string

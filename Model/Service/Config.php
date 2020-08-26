@@ -7,6 +7,7 @@ use Bitbull\AWSEventBridge\Model\Adminhtml\System\Config\Source\AuthenticationTy
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\CacheInterface;
+use Magento\Framework\App\ProductMetadataInterface;
 
 class Config implements ConfigInterface
 {
@@ -16,6 +17,7 @@ class Config implements ConfigInterface
     const XML_PATH_REGION = 'aws_eventbridge/options/region';
     const XML_PATH_SOURCE = 'aws_eventbridge/options/source';
     const XML_PATH_EVENT_BUS = 'aws_eventbridge/options/event_bus';
+    const XML_PATH_QUEUE_MODE = 'aws_eventbridge/options/queue_mode';
     const XML_PATH_TRACKING = 'aws_eventbridge/options/tracking';
     const XML_PATH_DEBUG_MODE = 'aws_eventbridge/options/debug_mode';
     const XML_PATH_CLOUDWATCH_EVENT = 'aws_eventbridge/options/cloudwatch_event_fallback';
@@ -48,8 +50,8 @@ class Config implements ConfigInterface
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         StoreManagerInterface $storeManager,
-        CacheInterface $cache)
-    {
+        CacheInterface $cache
+    ) {
         $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
         $this->cache = $cache;
@@ -114,7 +116,7 @@ class Config implements ConfigInterface
      */
     public function isCloudWatchEventFallbackEnabled()
     {
-        return $this->scopeConfig->isSetFlag(self::XML_PATH_CLOUDWATCH_EVENT);
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_CLOUDWATCH_EVENT, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -122,7 +124,7 @@ class Config implements ConfigInterface
      */
     public function isTrackingEnabled()
     {
-        return $this->scopeConfig->isSetFlag(self::XML_PATH_TRACKING);
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_TRACKING, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -130,7 +132,7 @@ class Config implements ConfigInterface
      */
     public function isDebugModeEnabled()
     {
-        return $this->scopeConfig->isSetFlag(self::XML_PATH_DEBUG_MODE);
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_DEBUG_MODE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -138,7 +140,7 @@ class Config implements ConfigInterface
      */
     public function isDryRunModeEnabled()
     {
-        return $this->scopeConfig->isSetFlag(self::XML_PATH_DRY_RUN_MODE);
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_DRY_RUN_MODE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
     /**
@@ -166,5 +168,13 @@ class Config implements ConfigInterface
 
         // Return value
         return $isEnable;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isQueueModeEnabled()
+    {
+        return $this->scopeConfig->isSetFlag(self::XML_PATH_QUEUE_MODE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 }

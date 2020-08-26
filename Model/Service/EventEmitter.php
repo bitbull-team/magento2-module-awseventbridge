@@ -2,16 +2,20 @@
 
 namespace Bitbull\AWSEventBridge\Model\Service;
 
+use Aws\CloudWatchEvents\CloudWatchEventsClient;
+use Aws\EventBridge\EventBridgeClient;
 use Bitbull\AWSEventBridge\Api\Service\ConfigInterface;
 use Bitbull\AWSEventBridge\Api\Service\EventEmitterInterface;
 use Bitbull\AWSEventBridge\Api\Service\LoggerInterface;
-use Aws\CloudWatchEvents\CloudWatchEventsClient;
-use Aws\EventBridge\EventBridgeClient;
 use Bitbull\AWSEventBridge\Api\Service\TrackingInterface;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Serialize\Serializer\Json as SerializerJson;
+use Magento\Framework\Stdlib\DateTime\DateTime;
 
 class EventEmitter implements EventEmitterInterface
 {
+    const TOPIC_NAME = 'aws.eventbridge.events.send';
+
     /**
      * @var LoggerInterface
      */
@@ -20,7 +24,7 @@ class EventEmitter implements EventEmitterInterface
     /**
      * @var SerializerJson
      */
-    private $serializerJson;
+    protected $serializerJson;
 
     /**
      * @var EventBridgeClient
@@ -36,6 +40,11 @@ class EventEmitter implements EventEmitterInterface
      * @var TrackingInterface
      */
     private $tracking;
+
+    /**
+     * @var \Magento\Framework\MessageQueue\PublisherInterface
+     */
+    private $publisher;
 
     /**
      * @var string|null
@@ -63,28 +72,48 @@ class EventEmitter implements EventEmitterInterface
     private $trackingEnabled;
 
     /**
+     * @var boolean
+     */
+    private $queueMode;
+    /**
+     * @var DateTime
+     */
+    private $date;
+
+    /**
      * Event emitter.
      *
      * @param LoggerInterface $logger
      * @param ConfigInterface $config
      * @param SerializerJson $serializerJson
      * @param TrackingInterface $tracking
+     * @param DateTime $date
      */
     public function __construct(
         LoggerInterface $logger,
         ConfigInterface $config,
         SerializerJson $serializerJson,
-        TrackingInterface $tracking
-    )
-    {
+        TrackingInterface $tracking,
+        DateTime $date
+    ) {
         $this->logger = $logger;
         $this->serializerJson = $serializerJson;
         $this->tracking = $tracking;
+        $this->date = $date;
 
         $this->source = $config->getSource();
         $this->dryRun = $config->isDryRunModeEnabled();
         $this->cloudWatchEventFallback = $config->isCloudWatchEventFallbackEnabled();
         $this->trackingEnabled = $config->isTrackingEnabled();
+
+        if (\class_exists('\Magento\Framework\MessageQueue\Publisher') && $config->isQueueModeEnabled()) {
+            // Dynamically load queue publisher based on Magento edition
+            $objManager = ObjectManager::getInstance();
+            $this->publisher = $objManager->create('\Magento\Framework\MessageQueue\PublisherInterface');
+            $this->queueMode = true;
+        } else {
+            $this->queueMode = false;
+        }
 
         if ($this->dryRun === false) {
             if ($this->cloudWatchEventFallback === false) {
@@ -97,7 +126,6 @@ class EventEmitter implements EventEmitterInterface
                     ]);
                 } catch (\Exception $exception) {
                     $this->logger->logException($exception);
-
                 }
             } else {
                 try {
@@ -114,7 +142,63 @@ class EventEmitter implements EventEmitterInterface
     }
 
     /** @inheritDoc */
+    public function addEventMetadata($eventData)
+    {
+        $eventData['metadata'] = [
+            'date' => $this->date->gmtDate(),
+            'timestamp' => $this->date->gmtTimestamp(),
+            'async' => $this->queueMode
+        ];
+        return $eventData;
+    }
+
+    /** @inheritDoc */
     public function send($eventName, $eventData)
+    {
+        // Add event metadata
+        $eventData = $this->addEventMetadata($eventData);
+
+        // conditionally send event synchronously or asynchronously (with queue)
+        if ($this->queueMode === true) {
+            $this->addEventToQueue($eventName, $eventData);
+        } else {
+            $this->sendImmediately($eventName, $eventData);
+        }
+    }
+
+    /**
+     * Add event to queue
+     *
+     * @param $eventName
+     * @param $eventData
+     */
+    protected function addEventToQueue($eventName, $eventData)
+    {
+        if ($this->publisher === null) {
+            $this->logger->error("No queue publisher set, 'addEventToQueue' method cannot work");
+            return;
+        }
+        try {
+            $this->publisher->publish(self::TOPIC_NAME, [
+                $this->serializerJson->serialize([
+                    'name' => $eventName,
+                    'data' => $eventData
+                ])
+            ]);
+        } catch (\Exception $exception) {
+            $this->logger->logException($exception);
+            return;
+        }
+        $this->logger->debug("Event '$eventName' published to topic '" . self::TOPIC_NAME . "' with data: " . print_r($eventData, true));
+    }
+
+    /**
+     * Send event
+     *
+     * @param $eventName
+     * @param $eventData
+     */
+    public function sendImmediately($eventName, $eventData)
     {
         // Check if tracking is enabled, in case add client infos
         if ($this->trackingEnabled === true) {

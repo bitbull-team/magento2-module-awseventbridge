@@ -91,6 +91,19 @@ Edit module options:
 - Enable debug mode if you want a more verbose logging in `var/log/aws-eventbridge.log` log file.
 - Enable CloudWatch Events fallback to use this service instead of EventBridge (for backward compatibility).
 - Enable dry run mode to activate the module actions and integrations without actually sending events data.
+- Enable Queue mode to send events asynchronously using Magento queue instead of real-time (only available on Magento Enterprise edition).
+
+If you enable the "Queue mode" you also need to enable cron consumer runner into your env.php
+```php
+    'cron_consumers_runner' => [
+        'max_messages' => 5,
+        'cron_run' => true,
+        'consumers' => [
+            'aws.eventbridge.events.send'
+        ]
+    ]
+```
+N.B. cron events are always executed synchronously without using queue.
 
 ![Events](./doc/imgs/config-cart-events.png?raw=true)
 
@@ -159,6 +172,18 @@ Event will be pass data into `Details` event property:
 (
     [sku] => WJ12-S-Blue
     [qty] => 1
+)
+```
+
+Every event has a `metadata` property that contain date, timestamp and process mode of the event:
+```php
+(
+    [metadata] => Array
+        (
+            [date] => 2020-08-26 08:51:18
+            [timestamp] => 1598431878
+            [async] => false // true if event was sent asynchronously using Magento Queue
+        )
 )
 ```
 
