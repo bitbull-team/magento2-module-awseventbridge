@@ -16,7 +16,6 @@ jobs:
                 operating-system:
                     - ubuntu-latest
                 php-versions:
-                    - '7.1'
                     - '7.2'
                     - '7.3'
                     - '7.4'
@@ -45,7 +44,3 @@ jobs:
             - name: Install dependencies
               if: steps.composer-cache.outputs.cache-hit != 'true'
               run: composer install --prefer-dist --no-progress --no-suggest
-            - name: Setup and run PCOV
-              run: |
-                composer require pcov/clobber
-                vendor/bin/pcov clobber
