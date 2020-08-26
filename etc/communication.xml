@@ -6,7 +6,7 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Communication/etc/communication.xsd">
-    <topic name="aws.eventbridge.events.send" request="string" response="string">
+    <topic name="aws.eventbridge.events.send" request="string">
         <handler name="aws.eventbridge.events.send" type="Bitbull\AWSEventBridge\Model\Service\QueueConsumer" method="process" />
     </topic>
 </config>
