@@ -185,7 +185,7 @@
                 </field>
                 <field id="saved" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>OrderCreated / OrderUpdated</label>
-                    <comment><![CDATA[An order was saved.]]></comment>
+                    <comment><![CDATA[An order was created or updated.]]></comment>
                     <source_model>Bitbull\AWSEventBridge\Block\System\Config\Source\EnableDisable</source_model>
                 </field>
                 <field id="canceled" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -203,7 +203,7 @@
                    showInStore="1">
                 <label>Invoice events</label>
                 <field id="saved" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>InvoiceSaved</label>
+                    <label>InvoiceCreated / InvoiceUpdated</label>
                     <comment><![CDATA[An invoice was created or updated.]]></comment>
                     <source_model>Bitbull\AWSEventBridge\Block\System\Config\Source\EnableDisable</source_model>
                 </field>
@@ -227,7 +227,7 @@
                    showInWebsite="1" showInStore="1">
                 <label>Credit Memo events</label>
                 <field id="saved" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>CreditmemoSaved</label>
+                    <label>CreditmemoCreated / CreditmemoUpdated</label>
                     <comment><![CDATA[A credit memo was created or updated.]]></comment>
                     <source_model>Bitbull\AWSEventBridge\Block\System\Config\Source\EnableDisable</source_model>
                 </field>

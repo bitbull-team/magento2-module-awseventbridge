@@ -16,6 +16,12 @@ Install this module using composer:
 composer require bitbull/magento2-module-awseventbridge
 ```
 
+Execute Magento 2 Setup Upgrade:
+
+```bash
+bin/magento setup:upgrade [--keep-generated]
+```
+
 ## IAM permissions required
 
 Create a new [IAM Policy](https://docs.aws.amazon.com/en_us/AWSEC2/latest/UserGuide/iam-policies-for-amazon-ec2.html) with these content:
@@ -437,6 +443,8 @@ A customer user change newsletter subscription preference.
 #### Order events
 
 `OrderPlaced`
+An new order was placed.
+
 ```json
 {
   "id": "000000001",
@@ -473,17 +481,87 @@ A customer user change newsletter subscription preference.
 ```
 
 `OrderCreated` / `OrderUpdated`
-An order was saved.
+An order was created or updated.
+
+```json
+{
+  "id": "000000001",
+  "status": "pending",
+  "coupon": null,
+  "billingAddress": {
+    "country": "IT",
+    "region": null,
+    "street": [
+      "via di test"
+    ],
+    "city": "Test",
+    "postCode": "12345"
+  },
+  "shippingAddress": {
+    "country": "IT",
+    "region": null,
+    "street": [
+      "via di test"
+    ],
+    "city": "Test",
+    "postCode": "12345"
+  },
+  "shippingAmount": 5,
+  "taxAmount": 0,
+  "total": 64,
+  "items":[{
+    "sku": "24-MB02",
+    "name": "Fusion Backpack",
+    "price": 59,
+    "qty": 1
+  }]
+}
+```
 
 `OrderCanceled`
 An order was canceled.
+
+```json
+{
+  "id": "000000001",
+  "status": "cancelled",
+  "coupon": null,
+  "billingAddress": {
+    "country": "IT",
+    "region": null,
+    "street": [
+      "via di test"
+    ],
+    "city": "Test",
+    "postCode": "12345"
+  },
+  "shippingAddress": {
+    "country": "IT",
+    "region": null,
+    "street": [
+      "via di test"
+    ],
+    "city": "Test",
+    "postCode": "12345"
+  },
+  "shippingAmount": 5,
+  "taxAmount": 0,
+  "total": 64,
+  "items":[{
+    "sku": "24-MB02",
+    "name": "Fusion Backpack",
+    "price": 59,
+    "qty": 1
+  }]
+}
+```
 
 `OrderDeleted`
 An order was deleted.
 
 #### Invoice events
 
-`InvoiceSaved`
+`InvoiceCreated` / `InvoiceUpdated`
 An invoice was created or updated.
 
 ```json
@@ -572,7 +650,7 @@ An invoice was deleted.
 
 #### Credit Memo events
 
-`CreditmemoSaved`
+`CreditmemoCreated` / `CreditmemoUpdated`
 A credit memo was created or updated.
 
 ```json
